@@ -1,15 +1,34 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-b1 = KeyboardButton('/time')
-b2 = KeyboardButton('/notification')
-b3 = KeyboardButton('/graph')
-b4 = KeyboardButton('/advice')
-b5 = KeyboardButton('/restart')
 
-kb_client = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+kb_help = KeyboardButton('/help')
+kb_rise = KeyboardButton('/rise')
+kb_down = KeyboardButton('/down')
+kb_settings = KeyboardButton('/settings')
+kb_back = KeyboardButton('/back')
+kb_reset = KeyboardButton('/reset')
+kb_yes = KeyboardButton('/Yes')
+kb_no = KeyboardButton('/No')
+kb_advice = KeyboardButton('/advice')
+kb_verify_client = KeyboardButton('/client')
+kb_verify_admin = KeyboardButton('/admin')
 
-new_kb_client = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
-kb_client.row(b1, b2).row(b3, b4).add(b5)
+ui_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+confirmation_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+admin_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+verify_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
-new_kb_client.row(b5, b3)
+
+verify_kb_scenario.row(kb_verify_client, kb_verify_admin)
+
+ui_kb_scenario.row(kb_rise, kb_down).row(kb_help, kb_settings)
+settings_kb_scenario.row(kb_reset, kb_back)
+confirmation_kb_scenario.row(kb_yes, kb_no)
+
+admin_kb_scenario.add(kb_advice)
+
+
+
+

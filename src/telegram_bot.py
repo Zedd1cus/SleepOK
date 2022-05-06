@@ -1,19 +1,18 @@
 from aiogram import executor
 from create_bot import dp
 
+from handlers.verify import verify
 from handlers.client import client
-from handlers.admin import admin
-from handlers.other import other
+from handlers.admin.settings import admin
 
 
-async def one_startup(_):
+async def one_startup(_) -> None:
     print('Bot online...')
 
 
-client.register_handlers_client(dp)
-
-admin.notification_register_handlers(dp)
-admin.time_register_handlers(dp)
+verify.verify_handlers(dp)
+client.user_interface_handlers(dp)
+admin.settings_handlers(dp)
 
 
 if __name__ == '__main__':
