@@ -14,20 +14,33 @@ kb_verify_client = KeyboardButton('/client')
 kb_verify_admin = KeyboardButton('/admin')
 
 
-ui_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 confirmation_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-admin_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-verify_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-
-
-verify_kb_scenario.row(kb_verify_client, kb_verify_admin)
-
-ui_kb_scenario.row(kb_rise, kb_down).row(kb_help, kb_settings)
-settings_kb_scenario.row(kb_reset, kb_back)
 confirmation_kb_scenario.row(kb_yes, kb_no)
 
-admin_kb_scenario.add(kb_advice)
+
+verify_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+verify_kb_scenario.row(kb_verify_client, kb_verify_admin)
+
+
+client_ui_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+client_ui_kb_scenario.row(kb_rise, kb_down).row(kb_help, kb_settings)
+
+client_settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+client_settings_kb_scenario.row(kb_reset, kb_back)
+
+client_rise_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+client_rise_kb_scenario.row(kb_rise, kb_back)
+
+client_down_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+client_down_kb_scenario.row(kb_down, kb_back)
+
+admin_ui_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+admin_ui_kb_scenario.row(kb_settings)
+
+admin_settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+admin_settings_kb_scenario.row(kb_advice, kb_back)
+
+
 
 
 
