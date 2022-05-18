@@ -12,7 +12,11 @@ kb_no = KeyboardButton('/No')
 kb_advice = KeyboardButton('/advice')
 kb_verify_client = KeyboardButton('/client')
 kb_verify_admin = KeyboardButton('/admin')
-
+kb_st_shut_up = KeyboardButton('/Просто_ужасно')
+kb_st_bad = KeyboardButton('/Плохо')
+kb_st_normal = KeyboardButton('/Пойдет')
+kb_st_good = KeyboardButton('/Хорошо')
+kb_st_super = KeyboardButton('/Отлично')
 
 confirmation_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 confirmation_kb_scenario.row(kb_yes, kb_no)
@@ -40,7 +44,8 @@ admin_ui_kb_scenario.row(kb_settings)
 admin_settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 admin_settings_kb_scenario.row(kb_advice, kb_back)
 
-
+five_states_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+five_states_kb_scenario.row(kb_st_super).row(kb_st_good).row(kb_st_normal).row(kb_st_bad).row(kb_st_shut_up)
 
 
 
