@@ -30,6 +30,3 @@ def user_interface_handlers(dp: Dispatcher):
     # UI Rise or down
     dp.register_message_handler(rise.command_rise, commands=['rise'])
     dp.register_message_handler(down.command_down, commands=['down'])
-
-
-
