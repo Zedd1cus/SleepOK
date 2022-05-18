@@ -15,6 +15,7 @@ start.start_handler(dp)
 
 client.user_interface_handlers(dp)
 client.start_settings_handlers(dp)
+client.routine_handlers(dp)
 
 admin.settings_handlers(dp)
 
