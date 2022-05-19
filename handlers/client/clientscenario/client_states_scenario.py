@@ -11,6 +11,7 @@ class ClientFMS(StatesGroup):
     # UI Settings
     ui_settings_state = State()
     ui_reset_state = State()
+    ui_change_settings_state = State()
 
     # # UI Help
     # ui_help_state = State()

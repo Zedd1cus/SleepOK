@@ -4,7 +4,6 @@ from create_bot import dp
 from handlers.client import client
 from handlers.admin import admin
 from handlers.basehandlers.start import start
-from handlers.client.settings import start_settings
 
 
 async def one_startup(_) -> None:
