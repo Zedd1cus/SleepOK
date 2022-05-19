@@ -8,7 +8,7 @@ from database import connect
 from database.user import User
 from database.state_change import StateChange
 from database.advice import Advice
-import time
+import datetime
 
 state_buttons = []
 state_buttons.append(kb_st_bad)
