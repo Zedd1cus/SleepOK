@@ -2,7 +2,8 @@ import types
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram import Dispatcher, types
 from src.create_bot import bot
-from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario
+from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario, kb_st_shut_up, kb_st_bad,\
+            kb_st_normal, kb_st_good, kb_st_super
 from aiogram.dispatcher import FSMContext
 from database import connect
 from database.user import User
@@ -10,16 +11,16 @@ from database.state_change import StateChange
 from database.advice import Advice
 import time
 
-
 class RoutineFSM(StatesGroup):
     time_to_check = State()
     are_you_sure = State()
-    delimiter = State()
     push_data_base = State()
 
-
 async def starter(message:types.Message):
+    await connect.init()
+    global user = await User.get(message.from_user.id)
     await hand_time(message.chat.id, ['21:00'])
+
 
 
 async def hand_time(chat_id, times):
@@ -34,21 +35,34 @@ async def command_five_sts(chat_id): #  time_to_check
 
 
 async def command_are_you_sure(message: types.Message, state:FSMContext): # are_you_sure
-    #with state.proxy() as data:
-     #   data['user_state'] = message.text
+    async with state.proxy() as data:
+        data['user_state'] = message.text
     await bot.send_message(message.chat.id, "Вы уверены?", reply_markup=confirmation_kb_scenario)
-    await RoutineFSM.delimiter.set()
+    await RoutineFSM.push_data_base.set()
 
 
-async def delimiter_yes_no(message: types.Message): # delimiter
+async def delimiter_yes_no(message: types.Message, state): # push_data_base
     if message.text == '/Yes':
-        await RoutineFSM.push_data_base.set()
-        print('Запушено') # прописать улет на бд
+        await push_to_database(message, state)
     else:
         await RoutineFSM.time_to_check.set()
         await command_five_sts(message.chat.id)
 
+async def get_state_id(message = None):
+    array = []
+    array.append(kb_st_shut_up['index'])
+    array.append(kb_st_bad['index'])
+    array.append(kb_st_normal['index'])
+    array.append(kb_st_good['index'])
+    array.append(kb_st_super['index'])
+    print(array)
 
 async def push_to_database(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data_to_push = data['user_state']
+    print(data_to_push)
+    user.add_mark()
+    print('Запушено')  # прописать улет на бд
     await state.finish()
 
+get_state_id()
