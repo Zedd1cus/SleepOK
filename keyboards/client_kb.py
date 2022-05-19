@@ -12,11 +12,15 @@ kb_no = KeyboardButton('/No')
 kb_advice = KeyboardButton('/advice')
 kb_verify_client = KeyboardButton('/client')
 kb_verify_admin = KeyboardButton('/admin')
-kb_st_shut_up = KeyboardButton('/Плохо')
-kb_st_bad = KeyboardButton('/Ниже_среднего')
-kb_st_normal = KeyboardButton('/Средне')
-kb_st_good = KeyboardButton('/Выше_среднего')
-kb_st_super = KeyboardButton('/Отлично')
+kb_st_bad = KeyboardButton('/Плохо')
+kb_st_below_average = KeyboardButton('/Ниже_среднего')
+kb_st_average = KeyboardButton('/Средне')
+kb_st_above_average = KeyboardButton('/Выше_среднего')
+kb_st_excellent = KeyboardButton('/Отлично')
+kb_time_of_rise = KeyboardButton('/time_of_first_rise')
+kb_time_of_down = KeyboardButton('/time_of_first_down')
+kb_time_of_notification = KeyboardButton('/time_of_notification')
+
 
 confirmation_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 confirmation_kb_scenario.row(kb_yes, kb_no)
@@ -45,8 +49,9 @@ admin_settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_
 admin_settings_kb_scenario.row(kb_advice, kb_back)
 
 five_states_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-five_states_kb_scenario.row(kb_st_super).row(kb_st_good).row(kb_st_normal).row(kb_st_bad).row(kb_st_shut_up)
+five_states_kb_scenario.row(kb_st_excellent, kb_st_bad).row(kb_st_above_average, kb_st_average, kb_st_below_average)
 
-
+client_reset_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+client_reset_kb_scenario.row(kb_time_of_rise, kb_time_of_down).row(kb_time_of_notification, kb_back)
 
 
