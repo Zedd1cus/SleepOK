@@ -56,5 +56,4 @@ def routine_handlers(dp:Dispatcher):
                                 commands=['Плохо', 'Ниже_среднего', 'Средне', 'Выше_среднего', 'Отлично'],
                                 state=notifications.RoutineFSM.are_you_sure)
     dp.register_message_handler(notifications.delimiter_yes_no, commands=['No', 'Yes'],
-                                state=notifications.RoutineFSM.delimiter)
-    dp.register_message_handler(notifications.push_to_database, state=notifications.RoutineFSM.delimiter)
+                                state=notifications.RoutineFSM.push_data_base)

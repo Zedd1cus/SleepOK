@@ -14,7 +14,6 @@ import time
 class RoutineFSM(StatesGroup):
     time_to_check = State()
     are_you_sure = State()
-    delimiter = State()
     push_data_base = State()
 
 
@@ -34,21 +33,23 @@ async def command_five_sts(chat_id): #  time_to_check
 
 
 async def command_are_you_sure(message: types.Message, state:FSMContext): # are_you_sure
-    #with state.proxy() as data:
-     #   data['user_state'] = message.text
+    async with state.proxy() as data:
+        data['user_state'] = message.text
     await bot.send_message(message.chat.id, "Вы уверены?", reply_markup=confirmation_kb_scenario)
-    await RoutineFSM.delimiter.set()
+    await RoutineFSM.push_data_base.set()
 
 
-async def delimiter_yes_no(message: types.Message): # delimiter
+async def delimiter_yes_no(message: types.Message, state): # push_data_base
     if message.text == '/Yes':
-        await RoutineFSM.push_data_base.set()
-        print('Запушено') # прописать улет на бд
+        await push_to_database(message, state)
     else:
         await RoutineFSM.time_to_check.set()
         await command_five_sts(message.chat.id)
 
 
 async def push_to_database(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data_to_push = data['user_state']
+    print(data_to_push)
+    print('Запушено')  # прописать улет на бд
     await state.finish()
-
