@@ -1,6 +1,5 @@
-import types
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from aiogram import Dispatcher, types
+from aiogram import types
 from src.create_bot import bot
 from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario, kb_st_bad, kb_st_below_average, \
         kb_st_average, kb_st_above_average, kb_st_excellent
@@ -23,7 +22,7 @@ class RoutineFSM(StatesGroup):
     are_you_sure = State()
     push_data_base = State()
 
-async def starter(message:types.Message):
+async def starter(message: types.Message):
     # await connect.init()
     # global user
     global notif_times
@@ -66,7 +65,7 @@ def get_state_id(message: types.Message) -> int:
 async def push_to_database(chat_id, state: FSMContext):
     async with state.proxy() as data:
         stated = data['user_state']
-    #mark = get_state_id(stated)
+    # mark = get_state_id(stated)
     # await user.add_mark(mark)
     # print(f'Пользователь {user.tid} отправил состояние {mark} на бд')
     await state.finish()
