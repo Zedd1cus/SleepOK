@@ -11,14 +11,16 @@ from database.state_change import StateChange
 from database.advice import Advice
 import time
 
+global user
+
 class RoutineFSM(StatesGroup):
     time_to_check = State()
     are_you_sure = State()
     push_data_base = State()
 
 async def starter(message:types.Message):
-    await connect.init()
-    global user = await User.get(message.from_user.id)
+    # await connect.init()
+    # user = await User.get(message.from_user.id)
     await hand_time(message.chat.id, ['21:00'])
 
 
@@ -49,6 +51,13 @@ async def delimiter_yes_no(message: types.Message, state): # push_data_base
         await command_five_sts(message.chat.id)
 
 async def get_state_id(message = None):
+    pass
+
+async def push_to_database(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data_to_push = data['user_state']
+    print(data_to_push)
+    # user.add_mark()
     array = []
     array.append(kb_st_shut_up['index'])
     array.append(kb_st_bad['index'])
@@ -56,13 +65,5 @@ async def get_state_id(message = None):
     array.append(kb_st_good['index'])
     array.append(kb_st_super['index'])
     print(array)
-
-async def push_to_database(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data_to_push = data['user_state']
-    print(data_to_push)
-    user.add_mark()
     print('Запушено')  # прописать улет на бд
     await state.finish()
-
-get_state_id()
