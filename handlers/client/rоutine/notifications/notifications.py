@@ -11,6 +11,7 @@ from database.state_change import StateChange
 from database.advice import Advice
 import datetime
 
+
 state_buttons = []
 state_buttons.append(kb_st_bad)
 state_buttons.append(kb_st_below_average)
