@@ -1,7 +1,25 @@
 import re
+def isValidTime(time):
+    regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+    p = re.compile(regex)
+    if time == "":
+        return False
+    m = re.search(p, time)
+    if m is None:
+        return False
+    else:
+        return True
 
-text = 'Еда, я еду к еди'
+print(isValidTime('01:50'))
 
-match = re.findall("[е+Е]д[а+у]", text)
 
-print(match)
+def verify_time_of_notification(time: str) -> bool:
+    regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+    p = re.compile(regex)
+    if time == "":
+        return False
+    m = re.search(p, time)
+    if m is None:
+        return False
+    else:
+        return True

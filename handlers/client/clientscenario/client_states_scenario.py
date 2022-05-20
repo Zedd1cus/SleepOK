@@ -8,12 +8,12 @@ from keyboards.client_kb import client_ui_kb_scenario
 
 
 class ClientFMS(StatesGroup):
+    # Base UI
+    selection_state = State()
+
     # UI Settings
     ui_settings_state = State()
     ui_reset_state = State()
-    ui_change_settings_state = State()
-
-    ui_confirmation_state = State()
 
 
     # # UI Help
