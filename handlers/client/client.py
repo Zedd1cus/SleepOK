@@ -16,20 +16,6 @@ from handlers.client.settings import start_settings
 from handlers.client.rоutine.notifications import notifications
 
 
-# Start settings handlers
-def start_settings_handlers(dp: Dispatcher):
-    dp.register_message_handler(start_settings.send_welcome, commands=['client'], state=None)
-    dp.register_message_handler(start_settings.first_data, state=start_settings.NotificationFSM.get_up)
-    dp.register_message_handler(start_settings.f_yes_no_1, commands=['Yes', 'No'],
-                                state=start_settings.NotificationFSM.yes_no_1)
-    dp.register_message_handler(start_settings.f_yes_no_2, commands=['Yes', 'No'],
-                                state=start_settings.NotificationFSM.yes_no_2)
-    dp.register_message_handler(start_settings.f_yes_no_3, commands=['Yes', 'No'],
-                                state=start_settings.NotificationFSM.yes_no_3)
-    dp.register_message_handler(start_settings.second_data, state=start_settings.NotificationFSM.sleep)
-    dp.register_message_handler(start_settings.notifications_data, state=start_settings.NotificationFSM.notifications)
-
-
 # User interface handlers
 def user_interface_handlers(dp: Dispatcher):
     # UI Settings
@@ -57,3 +43,25 @@ def routine_handlers(dp:Dispatcher):
                                 state=notifications.RoutineFSM.are_you_sure)
     dp.register_message_handler(notifications.delimiter_yes_no, commands=['No', 'Yes'],
                                 state=notifications.RoutineFSM.push_data_base)
+
+
+# Start settings handlers
+def start_settings_handlers(dp: Dispatcher):
+    # Rise register handlers
+    dp.register_message_handler(start_settings.command_rise, commands=['client'], state=None)
+    dp.register_message_handler(start_settings.command_set_up_rise,
+                                state=client_states_scenario.ClientFMS.settings_rise)
+    dp.register_message_handler(start_settings.command_confirmation_rise, commands=['Yes', 'No'],
+                                state=client_states_scenario.ClientFMS.settings_set_up_rise)
+
+    # Sleep register handlers
+    dp.register_message_handler(start_settings.command_set_up_sleep,
+                                state=client_states_scenario.ClientFMS.settings_confirmation_rise)
+    dp.register_message_handler(start_settings.command_confirmation_sleep, commands=['Yes', 'No'],
+                                state=client_states_scenario.ClientFMS.settings_set_up_sleep)
+
+    # Time of notification register handlers
+    dp.register_message_handler(start_settings.command_set_up_time_of_notification,
+                                state=client_states_scenario.ClientFMS.settings_confirmation_sleep)
+    dp.register_message_handler(start_settings.command_confirmation_time_of_notification, commands=['Yes', 'No'],
+                                state=client_states_scenario.ClientFMS.settings_set_up_time_of_notification)

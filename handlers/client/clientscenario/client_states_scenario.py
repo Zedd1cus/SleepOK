@@ -13,12 +13,28 @@ class ClientFMS(StatesGroup):
     ui_reset_state = State()
     ui_change_settings_state = State()
 
+    ui_confirmation_state = State()
+
+
     # # UI Help
     # ui_help_state = State()
-    #
+
     # # UI Rise or down
     # ui_rise_state = State()
     # ui_down_state = State()
+
+    # Start settings
+    settings_rise = State()
+    settings_set_up_rise = State()
+    settings_confirmation_rise = State()
+
+    settings_sleep = State()
+    settings_set_up_sleep = State()
+    settings_confirmation_sleep = State()
+
+    settings_time_of_notification = State()
+    settings_set_up_time_of_notification = State()
+    settings_confirmation_time_of_notification = State()
 
 
 
