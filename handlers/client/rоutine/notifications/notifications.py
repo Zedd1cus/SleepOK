@@ -4,6 +4,7 @@ from src.create_bot import bot
 from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario, kb_st_bad, kb_st_below_average, \
         kb_st_average, kb_st_above_average, kb_st_excellent
 from aiogram.dispatcher import FSMContext
+from time import sleep
 from database import connect
 from database.user import User
 from database.state_change import StateChange
@@ -25,16 +26,22 @@ class RoutineFSM(StatesGroup):
 async def starter(message: types.Message):
     # await connect.init()
     # global user
-    # global notif_times
+    global notif_times
     # user = await User.get(message.from_user.id)
     # notif_times = user.notification_time
+    #notif_times = [datetime.time(16, 14), datetime.time(16, 16)]
     await hand_time(message.chat.id) #, notif_times)
 
-
 async def hand_time(chat_id, times=None):
-    if True:
-        await RoutineFSM.time_to_check.set()
-        await command_five_sts(chat_id)
+    times = [datetime.time(16, 53), datetime.time(16, 54)]
+    while True:
+        sleep(60)
+        dt = datetime.datetime.now()
+        if datetime.time(dt.hour, dt.minute) in times:
+            await RoutineFSM.time_to_check.set()
+            await command_five_sts(chat_id)
+            break
+
 
 
 async def command_five_sts(chat_id): #  time_to_check
@@ -69,4 +76,6 @@ async def push_to_database(chat_id, state: FSMContext):
     # await user.add_mark(mark)
     # print(f'Пользователь {user.tid} отправил состояние {mark} на бд')
     await state.finish()
-    # await hand_time(chat_id, notif_times)
+    await hand_time(chat_id) #, notif_times)
+
+print(datetime.time())
