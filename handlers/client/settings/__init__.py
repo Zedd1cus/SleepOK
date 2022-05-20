@@ -1,1 +1,1 @@
-from handlers.client.settings import confirmation, goaltimes, notification, verify
+from handlers.client.settings import start_settings
