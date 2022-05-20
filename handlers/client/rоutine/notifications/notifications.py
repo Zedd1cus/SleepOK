@@ -29,15 +29,17 @@ async def starter(message: types.Message):
     global notif_times
     # user = await User.get(message.from_user.id)
     # notif_times = user.notification_time
-    #notif_times = [datetime.time(16, 14), datetime.time(16, 16)]
-    await hand_time(message.chat.id) #, notif_times)
+    notif_times = [datetime.time(17, 52), datetime.time(17, 53)]
+    await hand_time(message.chat.id, notif_times)
 
-async def hand_time(chat_id, times=None):
-    times = [datetime.time(16, 53), datetime.time(16, 54)]
+async def hand_time(chat_id, times, last_index=None):
     while True:
-        sleep(60)
+        sleep(1)
         dt = datetime.datetime.now()
-        if datetime.time(dt.hour, dt.minute) in times:
+        if (last_index is not None and datetime.time(dt.hour, dt.minute) == times[(last_index+1)%len(times)]) \
+                or (last_index is None and datetime.time(dt.hour, dt.minute) in times):
+            global lst_index
+            lst_index = times.index(datetime.time(dt.hour, dt.minute))
             await RoutineFSM.time_to_check.set()
             await command_five_sts(chat_id)
             break
@@ -76,6 +78,4 @@ async def push_to_database(chat_id, state: FSMContext):
     # await user.add_mark(mark)
     # print(f'Пользователь {user.tid} отправил состояние {mark} на бд')
     await state.finish()
-    await hand_time(chat_id) #, notif_times)
-
-print(datetime.time())
+    await hand_time(chat_id,  notif_times, last_index=lst_index)
