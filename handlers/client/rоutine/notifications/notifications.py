@@ -2,8 +2,8 @@ import types
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram import Dispatcher, types
 from src.create_bot import bot
-from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario, kb_st_shut_up, kb_st_bad,\
-            kb_st_normal, kb_st_good, kb_st_super
+from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario, kb_st_bad, kb_st_below_average, \
+        kb_st_average, kb_st_above_average, kb_st_excellent
 from aiogram.dispatcher import FSMContext
 from database import connect
 from database.user import User
@@ -11,16 +11,25 @@ from database.state_change import StateChange
 from database.advice import Advice
 import time
 
+state_buttons = []
+state_buttons.append(kb_st_bad)
+state_buttons.append(kb_st_below_average)
+state_buttons.append(kb_st_average)
+state_buttons.append(kb_st_above_average)
+state_buttons.append(kb_st_excellent)
+
 class RoutineFSM(StatesGroup):
     time_to_check = State()
     are_you_sure = State()
     push_data_base = State()
 
 async def starter(message:types.Message):
-    await connect.init()
-    global user = await User.get(message.from_user.id)
-    await hand_time(message.chat.id, ['21:00'])
-
+    # await connect.init()
+    # global user
+    global notif_times
+    # user = await User.get(message.from_user.id)
+    # notif_times = user.notification_time
+    await hand_time(message.chat.id, notif_times)
 
 
 async def hand_time(chat_id, times):
@@ -43,26 +52,22 @@ async def command_are_you_sure(message: types.Message, state:FSMContext): # are_
 
 async def delimiter_yes_no(message: types.Message, state): # push_data_base
     if message.text == '/Yes':
-        await push_to_database(message, state)
+        await push_to_database(message.chat.id, state)
     else:
         await RoutineFSM.time_to_check.set()
         await command_five_sts(message.chat.id)
 
-async def get_state_id(message = None):
-    array = []
-    array.append(kb_st_shut_up['index'])
-    array.append(kb_st_bad['index'])
-    array.append(kb_st_normal['index'])
-    array.append(kb_st_good['index'])
-    array.append(kb_st_super['index'])
-    print(array)
+def get_state_id(message: types.Message) -> int:
+    for button in state_buttons:
+        if message.text == button.text:
+            return int(button['index'])
 
-async def push_to_database(message: types.Message, state: FSMContext):
+
+async def push_to_database(chat_id, state: FSMContext):
     async with state.proxy() as data:
-        data_to_push = data['user_state']
-    print(data_to_push)
-    user.add_mark()
-    print('Запушено')  # прописать улет на бд
+        stated = data['user_state']
+    #mark = get_state_id(stated)
+    # await user.add_mark(mark)
+    # print(f'Пользователь {user.tid} отправил состояние {mark} на бд')
     await state.finish()
-
-get_state_id()
+    # await hand_time(chat_id, notif_times)
