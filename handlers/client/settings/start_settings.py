@@ -1,182 +1,158 @@
+import re
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types
 from src.create_bot import bot
+from handlers.client.clientscenario.client_states_scenario import ClientFMS
 from keyboards.client_kb import confirmation_kb_scenario, client_ui_kb_scenario
+from aiogram import Dispatcher
 
 
-class NotificationFSM(StatesGroup):
-    get_up = State()  # состояние ввода времени подъёма
-    yes_no_1 = State()  # кнопки да/нет для подтверждения предыдущего состояния
-    sleep = State()  # состояние ввода времени сна
-    yes_no_2 = State()  # кнопки да/нет для подтверждения предыдущего состояния
-    notifications = State()  # состояние ввода времени уведомления
-    yes_no_3 = State()  # кнопки да/нет для подтверждения предыдущего состояния
-    end = State()  # конец
+time_of_rise = None
+time_of_sleep = None
+array_of_time_of_notification = None
 
 
-# @dp.message_handler(commands=['start', 'help'], state=None)
-async def send_welcome(message: types.Message):
-    await NotificationFSM.get_up.set()
-    await bot.send_message(message.chat.id, "Привет! Я бот, который поможет тебе улучшить качество сна.")
-    await bot.send_message(message.chat.id, "Напишите время, когда вы хотите вставать.")
-    await time_rule(message)
-
-
-async def time_rule(message):
-    await bot.send_message(message.from_user.id, 'Формат: "часы:минуты".')
-
-
-hours_1 = None  # переменная, в которую записываются часы пробуждения
-minutes_1 = None  # переменная, в которую записываются минуты пробуждения
-hours_2 = None  # переменная, в которую записываются часы начала сна
-minutes_2 = None  # переменная, в которую записываются минуты начала сна
-array_of_time_notify = []  # список, в который добавляем времена уведомлений
-
-
-
-# @dp.message_handler(state=NotificationFSM.get_up)
-async def first_data(message: types.Message):
-    global hours_1
-    global minutes_1
-    s_mes = message.text.split(':')
-    if len(s_mes) == 2:
-        try:
-            hours_1 = (s_mes[0])
-            minutes_1 = (s_mes[1])
-            if (24 >= int(hours_1) >= 0) and (60 > int(minutes_1) >= 0):
-                await NotificationFSM.yes_no_1.set()
-                await bot.send_message(message.from_user.id, f"Вы хотите вставать в {hours_1}:{minutes_1}?",
-                                       reply_markup=confirmation_kb_scenario)
-
-            else:
-                raise ValueError
-
-        except Exception:
-            hours_1 = None
-            minutes_1 = None
-            await bot.send_message(message.chat.id, "Введен неверный формат!")
-            await time_rule(message)
-
-    else:
-        await bot.send_message(message.chat.id, "Введен неверный формат!")
-        await time_rule(message)
-
-
-async def f_yes_1(message):
-    # async with state.proxy() as data:
-    # data['hours'] = hours_1 # вот тут изначально планировалось записать данные в само состояние, но возникает какая-то ошибка
-    # data['minutes'] = minutes_1
-    await NotificationFSM.sleep.set()
-    await bot.send_message(message.from_user.id, "Напишите время, когда вы хотите ложиться спать.")
-    await time_rule(message)
-
-# @dp.message_handler(state=NotificationFSM.yes_no_1)
-async def f_yes_no_1(message: types.Message):
-    if message.text == '/Yes':
-        await NotificationFSM.get_up.set()
-        await f_yes_1(message)
-    else:
-        await NotificationFSM.get_up.set()
-        await time_rule(message)
-
-
-# @dp.register_message_handler(state=NotificationFSM.sleep)
-async def second_data(message):
-    global hours_2
-    global minutes_2
-    s_mes = message.text.split(':')
-    if len(s_mes) == 2:
-        try:
-            hours_2 = s_mes[0]
-            minutes_2 = s_mes[1]
-            if (24 >= int(hours_2) >= 0) and (60 > int(minutes_2) >= 0):
-                await NotificationFSM.yes_no_2.set()
-                await bot.send_message(message.chat.id, f"вы хотите ложиться в {hours_2}:{minutes_2}?",
-                                       reply_markup=confirmation_kb_scenario)
-
-            else:
-                raise ValueError
-
-        except Exception:
-            hours_2 = None
-            minutes_2 = None
-            await bot.send_message(message.chat.id, "Введен неверный формат!")
-            await time_rule(message)
-
-    else:
-        await bot.send_message(message.chat.id, "Введен неверный формат!")
-        await time_rule(message)
-
-
-# @dp.message_handler(state=NotificationFSM.yes_no_2)
-async def f_yes_no_2(message: types.Message):
-    if message.text == '/Yes':
-        await NotificationFSM.sleep.set()
-        await f_yes_2(message)
-    else:
-        await NotificationFSM.sleep.set()
-        await time_rule(message)
-
-
-async def f_yes_2(message):
-    await NotificationFSM.notifications.set()
-    await notif_rule(message)
-
-
-async def notif_rule(message):
-    await bot.send_message(message.from_user.id,
-                           'Пожалуйста, введите время уведомлений для оценки состояния.\n'
-                           'Вводите в том же формате:\n'
-                           '"часы:минуты"\n'
-                           '"часы:минуты"\n'
-                           '...............................\n'
-                           '"часы:минуты"')
-
-
-# @dp.register_message_handler(state=NotificationFSM.notifications)
-async def notifications_data(message):
-    global array_of_time_notify
-    string_of_time_notify = ''
-    array_of_time_notify = message.text.split()
-    for i in array_of_time_notify:
-        if verify_time_data(i):
-            string_of_time_notify += i + '\n'
-
-        else:
-            array_of_time_notify.clear()
-            await bot.send_message(message.chat.id, "Введен неверный формат!")
-            await notif_rule(message)
-            await NotificationFSM.notifications.set()
-            return
-
-    await bot.send_message(message.chat.id, "Вы хотите получать уведомления в\n"
-                                            f"{string_of_time_notify[:-1]}?", reply_markup=confirmation_kb_scenario)
-    await NotificationFSM.yes_no_3.set()
-
-
-def verify_time_data(time_notify):
-    s_mes = time_notify.split(':')
-
-    if len(s_mes) == 2:
-        hours = int(s_mes[0])
-        minutes = int(s_mes[1])
-        if (24 >= hours >= 0) and (60 > minutes >= 0):
-            return True
-        else:
-            return False
-    else:
+def verify_time_of_notification(time: str) -> bool:
+    regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+    p = re.compile(regex)
+    if time == "":
         return False
-
-
-# @dp.message_handler(state=NotificationFSM.yes_no_3)
-async def f_yes_no_3(message: types.Message, state=FSMContext):
-    global array_of_time_notify
-    if message.text == '/Yes':
-        await bot.send_message(message.chat.id, 'Спасибо за введенные данные!', reply_markup=client_ui_kb_scenario)
-        await state.finish()
-
+    m = re.search(p, time)
+    if m is None:
+        return False
     else:
-        array_of_time_notify.clear()
-        await notif_rule(message)
-        await NotificationFSM.notifications.set()
+        return True
+
+
+async def get_confirmation_message(message: types.Message, time: str, rise_or_sleep: str):
+    if rise_or_sleep == 'rise':
+        await bot.send_message(message.chat.id, f'Вы хотите вставать в {time}?', reply_markup=confirmation_kb_scenario)
+    elif rise_or_sleep == 'sleep':
+        await bot.send_message(message.chat.id, f'Вы хотите ложиться в {time}?', reply_markup=confirmation_kb_scenario)
+
+
+async def get_format_time_message(message: types.Message):
+    await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
+
+
+async def get_wrong_message(message: types.Message):
+    await bot.send_message(message.chat.id, 'Введен неверный формат!')
+
+
+async def get_rise_message(message: types.Message):
+    await bot.send_message(message.chat.id, 'Укажите время, в которое вы хотите вставать.')
+
+
+async def get_sleep_message(message: types.Message):
+    await bot.send_message(message.chat.id, 'Укажите время, в которое вы хотите ложиться.')
+
+
+async def get_time_of_notification_message(message: types.Message):
+    await bot.send_message(message.chat.id, 'Пожалуйста, введите время уведомлений для оценки состояния.\n'
+                                            'Формат:\n'
+                                            '"часы:минуты"\n'
+                                            '"часы:минуты"\n'
+                                            '..............................\n'
+                                            '"часы:минуты"')
+
+async def get_verify_time_of_notification_message(message: types.Message, row_of_time: str):
+    await bot.send_message(message.chat.id, "Вы хотите получать уведомления в\n"
+                                            f"{row_of_time[:-1]}?", reply_markup=confirmation_kb_scenario)
+
+
+async def command_rise(message: types.Message):
+    await get_rise_message(message)
+    await get_format_time_message(message)
+    await ClientFMS.settings_rise.set()
+
+
+async def command_set_up_rise(message: types.Message):
+    global time_of_rise
+    time_of_rise = message.text
+    if verify_time_of_notification(message.text):
+        await get_confirmation_message(message, message.text, 'rise')
+        await ClientFMS.settings_set_up_rise.set()
+    else:
+        await get_wrong_message(message)
+        await get_rise_message(message)
+        await get_format_time_message(message)
+        await ClientFMS.settings_rise.set()
+
+
+async def command_confirmation_rise(message: types.Message, state: FSMContext):
+    global time_of_rise
+    if message.text == '/Yes':
+        async with state.proxy() as data:
+            data['time_of_rise'] = time_of_rise
+        await get_sleep_message(message)
+        await get_format_time_message(message)
+        await ClientFMS.settings_confirmation_rise.set()
+    else:
+        await get_rise_message(message)
+        await get_format_time_message(message)
+        await ClientFMS.settings_rise.set()
+
+
+async def command_set_up_sleep(message: types.Message):
+    global time_of_sleep
+    time_of_sleep = message.text
+    if verify_time_of_notification(message.text):
+        await get_confirmation_message(message, message.text, 'sleep')
+        await ClientFMS.settings_set_up_sleep.set()
+    else:
+        await get_wrong_message(message)
+        await get_sleep_message(message)
+        await get_format_time_message(message)
+        await ClientFMS.settings_confirmation_rise.set()
+
+
+async def command_confirmation_sleep(message: types.Message, state: FSMContext):
+    global time_of_sleep
+    if message.text == '/Yes':
+        async with state.proxy() as data:
+            data['time_of_sleep'] = time_of_sleep
+        await get_time_of_notification_message(message)
+        await ClientFMS.settings_confirmation_sleep.set()
+    else:
+        await get_sleep_message(message)
+        await get_format_time_message(message)
+        await ClientFMS.settings_confirmation_rise.set()
+
+
+async def command_set_up_time_of_notification(message: types.Message):
+    global array_of_time_of_notification
+    array_of_time_of_notification = message.text.splitlines()
+    string_of_time_of_notification = ''
+    flag = True
+
+    for time in array_of_time_of_notification:
+        if verify_time_of_notification(time):
+            string_of_time_of_notification += time + '\n'
+        else:
+            flag = False
+            break
+
+    if flag:
+        await get_verify_time_of_notification_message(message, string_of_time_of_notification)
+        await ClientFMS.settings_set_up_time_of_notification.set()
+    else:
+        await get_wrong_message(message)
+        await get_time_of_notification_message(message)
+        await ClientFMS.settings_confirmation_sleep.set()
+
+
+async def command_confirmation_time_of_notification(message: types.Message, state: FSMContext):
+    global array_of_time_of_notification
+    if message.text == '/Yes':
+        async with state.proxy() as data:
+            data['array_of_time_of_notification'] = array_of_time_of_notification
+        await bot.send_message(message.chat.id, 'Ваш базовый интерфейс:\n'
+                                                '/help', reply_markup=client_ui_kb_scenario)
+        async with state.proxy() as data:
+            await bot.send_message(message.chat.id, str(data))
+        await state.finish()
+    else:
+        await get_time_of_notification_message(message)
+        await ClientFMS.settings_confirmation_sleep.set()
+
