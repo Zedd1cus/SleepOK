@@ -25,13 +25,13 @@ class RoutineFSM(StatesGroup):
 async def starter(message: types.Message):
     # await connect.init()
     # global user
-    global notif_times
+    # global notif_times
     # user = await User.get(message.from_user.id)
     # notif_times = user.notification_time
-    await hand_time(message.chat.id, notif_times)
+    await hand_time(message.chat.id) #, notif_times)
 
 
-async def hand_time(chat_id, times):
+async def hand_time(chat_id, times=None):
     if True:
         await RoutineFSM.time_to_check.set()
         await command_five_sts(chat_id)
