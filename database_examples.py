@@ -30,7 +30,7 @@ async def main():
         datetime.time.fromisoformat('16:00'),
         datetime.time.fromisoformat('20:00'),
     ])
-    print('После изменений', user)
+    print('После изменений', user.notification_time)
 
     # Работа с отметками (настроением 1-5)
     # Получение всех отметок пользователя
@@ -67,11 +67,24 @@ async def main():
     print("Все советы после добавлений", await Advice.get_all_advices())
     print("Советы по mark=5", await Advice.get_advices_by_mark(5))
 
-    # Удаление последнего совета с mark=3
+    # Отдельный пример
+    import random
+
+    # получение советов по состоянию 3
     advices = await Advice.get_advices_by_mark(3)
-    if len(advices) != 0:
-        await Advice.delete_by_uid(advices[0].uid)
-    print("Все советы после удаления", await Advice.get_all_advices())
+
+    # получение рандомного совета
+    advice = random.choice(advices)
+
+    #  advice.uid - его ID
+    #  advice.advice - сам совет, str
+    #  advice.mark - состояние
+
+    # удаление совета
+    await advice.delete()
+
+    # либо можно удалить через ID
+    await Advice.delete_by_uid(advice.uid)
 
 # Запуск async функции (примера)
 loop.run_until_complete(main())
