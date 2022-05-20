@@ -70,3 +70,14 @@ class User:
 
         # # если есть, возвращаем объект пользователя
         return User(*values[0])
+
+    @staticmethod
+    async def get_all_users() -> List['User']:
+        sql = 'select TID, TimeToUP, TimeToSleep, NotificationTime, Node, CreatedDate from users'
+        users = await get_conn().fetch(sql)
+
+        # # если есть, возвращаем объект пользователя
+        result = []
+        for user in users:
+            result.append(User(*user))
+        return result

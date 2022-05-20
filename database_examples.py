@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from typing import List
 
 # Подключение классов для работы с базой
 from database import connect
@@ -85,6 +86,56 @@ async def main():
 
     # либо можно удалить через ID
     await Advice.delete_by_uid(advice.uid)
+
+
+async def send_notification():
+    """ Это функция для отправки уведомления """
+    ...
+
+
+def get_sleep_time(notifcation_time: List[datetime.time]) -> float:
+    """
+    Эта функция должна принимать список с временами для уведомлений (которые указал пользователь),
+    и определять, через сколько времени (секунд) нужно отправить следующее уведомление
+    """
+    ...
+
+
+async def handle_player(tid: int):
+    """ Эта функция запускается в отдельном потоке и обрабатывает определенного пользователя """
+
+    # Мы обрабатываем каждого пользователя бесконечно
+    while True:
+        # Мы получаем пользователя
+        player = await User.get(tid)
+
+        # И спим до момента, когда нужно будет отправить уведомление
+        await asyncio.sleep(get_sleep_time(player.notification_time))
+
+        # Мы получаем актуальную информацию о пользователе
+        user_updated = await User.get(tid)
+
+        # И если она не сходится с тем что у нас было, значит пользователь
+        # сменил настройки и отправлять уведомление не нужно
+        if player.notification_time != user_updated.notification_time:
+            continue
+
+        # А если сходится, то отправляем уведомление
+        await send_notification()
+
+
+async def handle_all_players():
+    """
+    Эта функция должна запускаться при запуске самого бота.
+    Она запускает функцию обработки для каждого пользователя в отдельном потоке.
+
+    Стоит заметить, что она обрабатывает только пользователей, которые уже есть в БД.
+    Поэтому для новых пользователей (при их регистрации) нужно будет отдельно запускать
+    asyncio.create_task(handle_player(user.tid))
+    """
+    for user in await User.get_all_users():
+        asyncio.create_task(handle_player(user.tid))
+
 
 # Запуск async функции (примера)
 loop.run_until_complete(main())
