@@ -2,6 +2,8 @@ import re
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types
+
+from handlers.client.userinterface import user_interface
 from src.create_bot import bot
 from handlers.client.clientscenario.client_states_scenario import ClientFMS
 from keyboards.client_kb import confirmation_kb_scenario, client_ui_kb_scenario
@@ -147,11 +149,9 @@ async def command_confirmation_time_of_notification(message: types.Message, stat
     if message.text == '/Yes':
         async with state.proxy() as data:
             data['array_of_time_of_notification'] = array_of_time_of_notification
-        await bot.send_message(message.chat.id, 'Ваш базовый интерфейс:\n'
-                                                '/help', reply_markup=client_ui_kb_scenario)
         async with state.proxy() as data:
             await bot.send_message(message.chat.id, str(data))
-        await state.finish()
+        await user_interface.command_base_ui(message)
     else:
         await get_time_of_notification_message(message)
         await ClientFMS.settings_confirmation_sleep.set()

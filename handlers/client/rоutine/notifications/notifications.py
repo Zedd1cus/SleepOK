@@ -17,10 +17,12 @@ state_buttons.append(kb_st_average)
 state_buttons.append(kb_st_above_average)
 state_buttons.append(kb_st_excellent)
 
+
 class RoutineFSM(StatesGroup):
     time_to_check = State()
     are_you_sure = State()
     push_data_base = State()
+
 
 async def starter(message: types.Message):
     # await connect.init()
