@@ -12,7 +12,7 @@ from handlers.client.clientscenario.client_states_scenario import ClientFMS
 from handlers.client.settings import start_settings
 
 # Routine module
-from handlers.client.rоutine.notifications import notifications
+from handlers.client.rоutine.notifications import notifications, notification_new
 
 # UI module
 from handlers.client.userinterface.settings import settings
@@ -70,3 +70,13 @@ def start_settings_handlers(dp: Dispatcher):
                                 state=ClientFMS.settings_confirmation_sleep)
     dp.register_message_handler(start_settings.command_confirmation_time_of_notification, commands=['Yes', 'No'],
                                 state=ClientFMS.settings_set_up_time_of_notification)
+
+def new_routine_handlers(dp: Dispatcher):
+    dp.register_message_handler(notification_new.send_notification,
+                                state=notification_new.RoutineFSM.check_state)
+    dp.register_message_handler(notification_new.command_are_you_sure,
+                                commands=['Плохо', 'Ниже_среднего', 'Средне', 'Выше_среднего', 'Отлично'],
+                                state=notification_new.RoutineFSM.check_state)
+    dp.register_message_handler(notification_new.delimiter_yes_no,
+                                commands=['Yes', 'No'],
+                                state=notification_new.RoutineFSM.push_data_base)
