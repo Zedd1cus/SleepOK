@@ -18,6 +18,7 @@ state_buttons.append(kb_st_average)
 state_buttons.append(kb_st_above_average)
 state_buttons.append(kb_st_excellent)
 
+
 class RoutineFSM(StatesGroup):
     check_state = State()
     push_data_base = State()
@@ -40,6 +41,7 @@ def get_sleep_time(notification_time: list[datetime.time]) -> float:
             return dif
     return abs(first_dif)
 
+
 async def command_are_you_sure(message: types.Message, state:FSMContext): # check_state
     async with state.proxy() as data:
         data['user_state'] = message.text
@@ -53,6 +55,7 @@ async def delimiter_yes_no(message: types.Message, state: FSMContext): # push_da
     else:
         await RoutineFSM.check_state.set()
         await send_notification(message.from_user.id)
+
 
 async def push_to_database(tid, state: FSMContext):
     async with state.proxy() as data:
@@ -71,7 +74,7 @@ def get_state_id(message: types.Message) -> int:
             return int(button['index'])
 
 
-async def handle_player(tid: int):
+async def handle_player(tid: int): # для польз вне бд asyncio.create_task(handle_player(user.tid))
 
     while True:
 
@@ -88,7 +91,7 @@ async def handle_player(tid: int):
         await send_notification(tid)
 
 
-async def handle_all_players():
+async def handle_all_players(): # должна запускаться с самим ботом on_startup
 
     for user in await User.get_all_users():
         asyncio.create_task(handle_player(user.tid))
