@@ -27,7 +27,7 @@ class User:
 
     async def set_time_to_sleep(self, time_to_sleep: time):
         self.time_to_sleep = time_to_sleep
-        await get_conn().execute('update users set TimeToSleep=$1 where TID=$2', self.time_to_up, self.tid)
+        await get_conn().execute('update users set TimeToSleep=$1 where TID=$2', self.time_to_sleep, self.tid)
 
     async def set_node(self, node: int):
         self.node = node

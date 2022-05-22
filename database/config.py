@@ -1,5 +1,5 @@
-user = 'danis'
+user = 'sleepok'
 password = '123'
 db_name = 'sleepok'
-host = 'localhost'
+host = '91.214.71.158'
 port = 5432
