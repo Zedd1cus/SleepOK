@@ -149,8 +149,6 @@ async def command_confirmation_time_of_notification(message: types.Message, stat
     if message.text == '/Yes':
         async with state.proxy() as data:
             data['array_of_time_of_notification'] = array_of_time_of_notification
-        async with state.proxy() as data:
-            await bot.send_message(message.chat.id, str(data))
         await user_interface.command_base_ui(message)
     else:
         await get_time_of_notification_message(message)

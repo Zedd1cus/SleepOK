@@ -20,6 +20,9 @@ kb_st_excellent = KeyboardButton('/Отлично')
 kb_time_of_rise = KeyboardButton('/time_of_first_rise')
 kb_time_of_down = KeyboardButton('/time_of_first_down')
 kb_time_of_notification = KeyboardButton('/time_of_notification')
+kb_create_advice = KeyboardButton('/create')
+kb_delete_advice = KeyboardButton('/delete')
+kb_show_advices = KeyboardButton('/show')
 
 
 confirmation_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -47,6 +50,12 @@ admin_ui_kb_scenario.row(kb_settings)
 
 admin_settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 admin_settings_kb_scenario.row(kb_advice, kb_back)
+
+admin_advice_interface_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+admin_advice_interface_kb_scenario.row(kb_show_advices, kb_back)
+
+admin_show_interface_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+admin_show_interface_kb_scenario.row(kb_delete_advice, kb_create_advice)
 
 five_states_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 five_states_kb_scenario.row(kb_st_excellent, kb_st_bad).row(kb_st_above_average, kb_st_average, kb_st_below_average)

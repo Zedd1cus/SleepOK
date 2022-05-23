@@ -1,5 +1,8 @@
 from aiogram import Dispatcher
 
+# Client start module
+from handlers.basehandlers.start.start import StartFMS
+
 # User interface moduls
 from handlers.client.userinterface.help import help
 from handlers.client.userinterface.risedown import rise, down
@@ -17,7 +20,6 @@ from handlers.client.rоutine.notifications import notifications, notification_n
 # UI module
 from handlers.client.userinterface.settings import settings
 from handlers.client.userinterface.user_interface import command_base_ui, command_user_selection
-
 
 
 # Base UI handlers
@@ -53,7 +55,7 @@ def routine_handlers(dp:Dispatcher):
 # Start settings handlers
 def start_settings_handlers(dp: Dispatcher):
     # Rise register handlers
-    dp.register_message_handler(start_settings.command_rise, commands=['client'], state=None)
+    dp.register_message_handler(start_settings.command_rise, commands=['client'], state=StartFMS.start_state)
     dp.register_message_handler(start_settings.command_set_up_rise,
                                 state=ClientFMS.settings_rise)
     dp.register_message_handler(start_settings.command_confirmation_rise, commands=['Yes', 'No'],
@@ -70,6 +72,7 @@ def start_settings_handlers(dp: Dispatcher):
                                 state=ClientFMS.settings_confirmation_sleep)
     dp.register_message_handler(start_settings.command_confirmation_time_of_notification, commands=['Yes', 'No'],
                                 state=ClientFMS.settings_set_up_time_of_notification)
+
 
 def new_routine_handlers(dp: Dispatcher):
     dp.register_message_handler(notification_new.send_notification,
