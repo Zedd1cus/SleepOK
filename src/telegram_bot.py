@@ -1,6 +1,6 @@
 from aiogram import executor
 from create_bot import dp
-
+from database import connect
 from handlers.client import client
 from handlers.admin import admin
 from handlers.basehandlers.start import start
@@ -14,6 +14,7 @@ async def one_startup(_) -> None:
 
 
 async def started(_):
+    await connect.init()
     await handle_all_players()
 
 start.start_handler(dp)
