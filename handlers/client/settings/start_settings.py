@@ -1,14 +1,21 @@
 import re
+import datetime
+import asyncio
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types
 
+from handlers.client.rоutine.notifications.notification_new import handle_player
 from handlers.client.userinterface import user_interface
 from src.create_bot import bot
 from handlers.client.clientscenario.client_states_scenario import ClientFMS
 from keyboards.client_kb import confirmation_kb_scenario, client_ui_kb_scenario
 from aiogram import Dispatcher
-
+from database import connect
+from database.user import User
+from database.state_change import StateChange
+from database.advice import Advice
+from database.user import User
 
 time_of_rise = None
 time_of_sleep = None
@@ -147,10 +154,17 @@ async def command_set_up_time_of_notification(message: types.Message):
 async def command_confirmation_time_of_notification(message: types.Message, state: FSMContext):
     global array_of_time_of_notification
     if message.text == '/Yes':
+        user = await User.get(message.from_user.id)
+
         async with state.proxy() as data:
             data['array_of_time_of_notification'] = array_of_time_of_notification
+            await user.set_time_to_up(datetime.time.fromisoformat(data['time_of_rise']))
+            await user.set_time_to_sleep(datetime.time.fromisoformat(data['time_of_sleep']))
+            await user.set_notification_time([datetime.time.fromisoformat(k) for k in data['array_of_time_of_notification']])
+
+        await asyncio.create_task(handle_player(user.tid))
+        await state.finish()
         await user_interface.command_base_ui(message)
     else:
         await get_time_of_notification_message(message)
         await ClientFMS.settings_confirmation_sleep.set()
-
