@@ -72,6 +72,17 @@ class User:
         return User(*values[0])
 
     @staticmethod
+    async def is_registered(tid: int) -> bool:
+        sql = 'select TID, TimeToUP, TimeToSleep, NotificationTime, Node, CreatedDate from users where TID=$1'
+        values = await get_conn().fetch(sql, tid)
+        # если пользователя нет в базе, создаем запись
+        if len(values) == 0:
+            return False
+
+        # # если есть, возвращаем объект пользователя
+        return True
+
+    @staticmethod
     async def get_all_users() -> List['User']:
         sql = 'select TID, TimeToUP, TimeToSleep, NotificationTime, Node, CreatedDate from users'
         users = await get_conn().fetch(sql)
