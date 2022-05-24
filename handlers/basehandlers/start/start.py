@@ -20,12 +20,7 @@ async def command_start(message: types.Message):
     if is_user_in:
         await bot.send_message(message.chat.id, "What's up!", reply_markup=verify_kb_scenario)
         await StartFMS.start_state.set()
-    else:
-        await user_interface.command_base_ui(message)
 
 
 def start_handler(dp: Dispatcher):
     dp.register_message_handler(command_start, commands=['start'])
-
-
-
