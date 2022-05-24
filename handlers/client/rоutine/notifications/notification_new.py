@@ -75,7 +75,7 @@ def get_state_id(message: types.Message) -> int:
 
 
 async def handle_player(tid: int): # для польз вне бд asyncio.create_task(handle_player(user.tid))
-
+    await connect.init()
     while True:
 
         player = await User.get(tid)
@@ -92,7 +92,7 @@ async def handle_player(tid: int): # для польз вне бд asyncio.creat
 
 
 async def handle_all_players(): # должна запускаться с самим ботом on_startup
-
+    await connect.init()
     for user in await User.get_all_users():
         asyncio.create_task(handle_player(user.tid))
 

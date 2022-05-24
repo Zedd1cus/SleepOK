@@ -14,7 +14,6 @@ async def one_startup(_) -> None:
 
 
 async def started(_):
-    await connect.init()
     await handle_all_players()
 
 start.start_handler(dp)

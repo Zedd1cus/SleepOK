@@ -154,6 +154,8 @@ async def command_set_up_time_of_notification(message: types.Message):
 async def command_confirmation_time_of_notification(message: types.Message, state: FSMContext):
     global array_of_time_of_notification
     if message.text == '/Yes':
+        await connect.init()
+
         user = await User.get(message.from_user.id)
 
         async with state.proxy() as data:
@@ -162,7 +164,7 @@ async def command_confirmation_time_of_notification(message: types.Message, stat
             await user.set_time_to_sleep(datetime.time.fromisoformat(data['time_of_sleep']))
             await user.set_notification_time([datetime.time.fromisoformat(k) for k in data['array_of_time_of_notification']])
 
-        await asyncio.create_task(handle_player(user.tid))
+        asyncio.create_task(handle_player(user.tid))
         await state.finish()
         await user_interface.command_base_ui(message)
     else:
