@@ -10,8 +10,9 @@ class StartFMS(StatesGroup):
 
 
 async def command_start(message: types.Message):
-    await bot.send_message(message.chat.id, "What's up!", reply_markup=verify_kb_scenario)
-    await StartFMS.start_state.set()
+    if True: # нижнее нужно проделывать только если юзера нет в бд, иначе - pass
+        await bot.send_message(message.chat.id, "What's up!", reply_markup=verify_kb_scenario)
+        await StartFMS.start_state.set()
 
 
 def start_handler(dp: Dispatcher):
