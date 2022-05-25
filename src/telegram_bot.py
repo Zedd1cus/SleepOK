@@ -26,5 +26,5 @@ admin.settings_handlers(dp)
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True, on_startup=started)
+    executor.start_polling(dp, skip_updates=True, on_startup=one_startup) #started)
 

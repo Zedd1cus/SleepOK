@@ -19,8 +19,8 @@ class StartFMS(StatesGroup):
 async def command_start(message: types.Message):
     # Сюда добавить проверку на id админа, если да, то часть админа,
     # если нет, то часть клиента
-    is_user_in = await User.is_registered(message.from_user.id)
-    if is_user_in:
+    # is_user_in = await User.is_registered(message.from_user.id)
+    if True: # is_user_in
         await bot.send_message(message.chat.id, "What's up!", reply_markup=verify_kb_scenario)
         await StartFMS.start_state.set()
 
