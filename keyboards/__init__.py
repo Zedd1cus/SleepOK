@@ -1,6 +1,3 @@
 from keyboards.client_kb import confirmation_kb_scenario
-from keyboards.client_kb import verify_kb_scenario
 from keyboards.client_kb import client_ui_kb_scenario
 from keyboards.client_kb import client_settings_kb_scenario
-from keyboards.client_kb import admin_ui_kb_scenario
-from keyboards.client_kb import admin_settings_kb_scenario

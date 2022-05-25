@@ -3,7 +3,6 @@ from aiogram import types
 from handlers.client.settings import start_settings
 from src.create_bot import bot
 from aiogram import Dispatcher
-from keyboards.client_kb import verify_kb_scenario
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from database import connect

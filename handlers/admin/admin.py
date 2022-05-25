@@ -27,7 +27,7 @@ def settings_handlers(dp: Dispatcher):
     dp.register_message_handler(advice.command_mark_interface, commands=['Плохо', 'Ниже_среднего', 'Средне',
                                 'Выше_среднего', 'Отлично'], state=AdminFSM.show_interface_state)
 
-    dp.register_message_handler(advice.perform_action, commands=['delete', 'create'],
+    dp.register_message_handler(advice.perform_action, commands=['delete', 'create', 'back'],
                                 state=AdminFSM.action_interface_state)
 
     dp.register_message_handler(advice.confirmation_for_delete, state=AdminFSM.delete_interface_state)
