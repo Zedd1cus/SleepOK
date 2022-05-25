@@ -23,7 +23,7 @@ array_of_time_of_notification = None
 
 
 def verify_time_of_notification(time: str) -> bool:
-    regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+    regex = "^([01][0-9]|2[0-3]):[0-5][0-9]$"
     p = re.compile(regex)
     if time == "":
         return False
