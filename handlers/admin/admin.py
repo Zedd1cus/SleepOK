@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 
 # Start state module
-from handlers.basehandlers.start.start import StartFMS
+# from handlers.basehandlers.start.start import StartFMS
 
 # Admin admin moduls
 from handlers.admin.adminscenario.admin_states_scenario import AdminFSM, command_admin
@@ -12,7 +12,7 @@ from handlers.admin.admininterface.settings.advice import advice
 # Admin admin handlers
 def settings_handlers(dp: Dispatcher):
     # Admin start
-    dp.register_message_handler(command_admin, commands=['admin'], state=StartFMS.start_state)
+    dp.register_message_handler(command_admin, commands=['admin'], state=None)
 
     # Admin settings
     dp.register_message_handler(settings.command_settings, commands=['settings'],
