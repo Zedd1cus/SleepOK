@@ -3,7 +3,7 @@ from src.create_bot import bot
 from aiogram.dispatcher import FSMContext
 from handlers.basehandlers.back import back
 from handlers.admin.adminscenario import admin_states_scenario
-from keyboards.client_kb import admin_settings_kb_scenario, verify_kb_scenario
+from keyboards.admin_kb import admin_settings_kb_scenario
 
 
 async def command_settings(message: types.Message, state: FSMContext):

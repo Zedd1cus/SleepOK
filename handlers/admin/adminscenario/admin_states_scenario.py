@@ -1,7 +1,7 @@
 from aiogram import types
 from src.create_bot import bot
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from keyboards.client_kb import admin_ui_kb_scenario
+from keyboards.admin_kb import admin_ui_kb_scenario
 
 
 class AdminFSM(StatesGroup):
@@ -10,6 +10,7 @@ class AdminFSM(StatesGroup):
 
     advice_interface_state = State()
     show_interface_state = State()
+    time_interface_state = State()
 
     action_interface_state = State()
     confirmation_for_delete_state = State()

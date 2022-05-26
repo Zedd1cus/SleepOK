@@ -12,8 +12,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from handlers.client.settings import start_settings
 
 
-async def command_base_ui(message: types.Message):
-    await bot.send_message(message.chat.id, 'Вы находитесь в базовом интерфейсе.',
+async def command_base_ui(tid):
+    await bot.send_message(tid, 'Вы находитесь в базовом интерфейсе.',
                            reply_markup=client_ui_kb_scenario)
     await ClientFMS.selection_state.set()
 

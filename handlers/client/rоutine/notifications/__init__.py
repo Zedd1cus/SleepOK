@@ -1,1 +1,1 @@
-from handlers.client.rоutine.notifications import notifications
+from handlers.client.rоutine.notifications import notifications, notification_new

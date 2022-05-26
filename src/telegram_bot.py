@@ -1,6 +1,6 @@
 from aiogram import executor
 from create_bot import dp
-
+from database import connect
 from handlers.client import client
 from handlers.admin import admin
 from handlers.basehandlers.start import start
@@ -16,7 +16,6 @@ async def one_startup(_) -> None:
 async def started(_):
     await handle_all_players()
 
-start.start_handler(dp)
 client.start_settings_handlers(dp)
 client.new_routine_handlers(dp)
 client.user_interface_handlers(dp)
@@ -26,5 +25,5 @@ admin.settings_handlers(dp)
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True, on_startup=started)
+    executor.start_polling(dp, skip_updates=True, on_startup=one_startup) #started)
 

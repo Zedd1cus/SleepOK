@@ -8,6 +8,7 @@ from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenari
 from database import connect
 from aiogram.dispatcher import FSMContext
 from database.user import User
+from handlers.client.userinterface import user_interface
 from database.state_change import StateChange
 from database.advice import Advice
 
@@ -22,6 +23,10 @@ state_buttons.append(kb_st_excellent)
 class RoutineFSM(StatesGroup):
     check_state = State()
     push_data_base = State()
+
+async def send_graphs(): # эту ф-цию вызывать после того, как user нажал на /rise и подтвердил
+    if datetime.datetime.today().weekday() == 0:
+        pass # нужно получить данные за прошлую неделю - построить графики - отправить пользователю
 
 
 async def send_notification(tid):
@@ -75,7 +80,7 @@ def get_state_id(message: types.Message) -> int:
 
 
 async def handle_player(tid: int): # для польз вне бд asyncio.create_task(handle_player(user.tid))
-
+    await connect.init()
     while True:
 
         player = await User.get(tid)
@@ -92,9 +97,10 @@ async def handle_player(tid: int): # для польз вне бд asyncio.creat
 
 
 async def handle_all_players(): # должна запускаться с самим ботом on_startup
-
+    await connect.init()
     for user in await User.get_all_users():
         asyncio.create_task(handle_player(user.tid))
+        await user_interface.command_base_ui(user.tid)
 
 
 if __name__ == '__main__':
