@@ -17,6 +17,7 @@ async def main():
     # Подключение к базе данных
     await connect.init()
 
+    # print(await User.is_registered(1235))
     # Получение пользователя по Telegram ID
     user = await User.get(12345)
     print('Пользователь', user)
@@ -60,32 +61,32 @@ async def main():
     await last_state.delete()
     print('Статусы после удаления последнего', await user.get_all_states())
 
-    # Работа с советами
-    print("Все советы", await Advice.get_all_advices())
-    await Advice.create(3, "Не ешь перед сном")
-    await Advice.create(5, "Не спи днем")
-    await Advice.create(5, "Больше занимайся спортом")
-    print("Все советы после добавлений", await Advice.get_all_advices())
-    print("Советы по mark=5", await Advice.get_advices_by_mark(5))
-
-    # Отдельный пример
-    import random
-
-    # получение советов по состоянию 3
-    advices = await Advice.get_advices_by_mark(3)
-
-    # получение рандомного совета
-    advice = random.choice(advices)
-
-    #  advice.uid - его ID
-    #  advice.advice - сам совет, str
-    #  advice.mark - состояние
-
-    # удаление совета
-    await advice.delete()
-
-    # либо можно удалить через ID
-    await Advice.delete_by_uid(advice.uid)
+    # # Работа с советами
+    # print("Все советы", await Advice.get_all_advices())
+    # await Advice.create(3, "Не ешь перед сном")
+    # await Advice.create(5, "Не спи днем")
+    # await Advice.create(5, "Больше занимайся спортом")
+    # print("Все советы после добавлений", await Advice.get_all_advices())
+    # print("Советы по mark=5", await Advice.get_advices_by_mark(5))
+    #
+    # # Отдельный пример
+    # import random
+    #
+    # # получение советов по состоянию 3
+    # advices = await Advice.get_advices_by_mark(3)
+    #
+    # # получение рандомного совета
+    # advice = random.choice(advices)
+    #
+    # #  advice.uid - его ID
+    # #  advice.advice - сам совет, str
+    # #  advice.mark - состояние
+    #
+    # # удаление совета
+    # await advice.delete()
+    #
+    # # либо можно удалить через ID
+    # await Advice.delete_by_uid(advice.uid)
 
 
 async def send_notification():

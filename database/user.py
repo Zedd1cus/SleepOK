@@ -1,7 +1,7 @@
 from datetime import datetime, time
 from typing import List, Optional
 
-from database.connect import get_conn
+from database.connect import get_poll
 from database.mark import Mark
 from database.state_change import StateChange
 
@@ -23,25 +23,25 @@ class User:
 
     async def set_time_to_up(self, time_to_up: time):
         self.time_to_up = time_to_up
-        await get_conn().execute('update users set TimeToUP=$1 where TID=$2', self.time_to_up, self.tid)
+        await get_poll().execute('update users set TimeToUP=$1 where TID=$2', self.time_to_up, self.tid)
 
     async def set_time_to_sleep(self, time_to_sleep: time):
         self.time_to_sleep = time_to_sleep
-        await get_conn().execute('update users set TimeToSleep=$1 where TID=$2', self.time_to_sleep, self.tid)
+        await get_poll().execute('update users set TimeToSleep=$1 where TID=$2', self.time_to_sleep, self.tid)
 
     async def set_node(self, node: int):
         self.node = node
-        await get_conn().execute('update users set Node=$1 where TID=$2', self.node, self.tid)
+        await get_poll().execute('update users set Node=$1 where TID=$2', self.node, self.tid)
 
     async def set_notification_time(self, notification_time: List[time]):
         self.notification_time = notification_time
-        await get_conn().execute('update users set NotificationTime=$1 where TID=$2', self.notification_time, self.tid)
+        await get_poll().execute('update users set NotificationTime=$1 where TID=$2', self.notification_time, self.tid)
 
     async def add_mark(self, mark: int):
-        await get_conn().execute('insert into marks (TID, Value) values ($1, $2)', self.tid, mark)
+        await get_poll().execute('insert into marks (TID, Value) values ($1, $2)', self.tid, mark)
 
     async def add_state_change(self, state: int):
-        await get_conn().execute('insert into state_changes (TID, State) values ($1, $2)', self.tid, state)
+        await get_poll().execute('insert into state_changes (TID, State) values ($1, $2)', self.tid, state)
 
     async def get_last_mark(self) -> Optional[Mark]:
         return await Mark.get_last_by_tid(self.tid)
@@ -57,13 +57,13 @@ class User:
 
     @staticmethod
     async def create(tid: int) -> 'User':
-        await get_conn().execute('insert into users (TID) values ($1)', tid)
+        await get_poll().execute('insert into users (TID) values ($1)', tid)
         return await User.get(tid)
 
     @staticmethod
     async def get(tid: int) -> 'User':
         sql = 'select TID, TimeToUP, TimeToSleep, NotificationTime, Node, CreatedDate from users where TID=$1'
-        values = await get_conn().fetch(sql, tid)
+        values = await get_poll().fetch(sql, tid)
         # если пользователя нет в базе, создаем запись
         if len(values) == 0:
             return await User.create(tid)
@@ -74,7 +74,7 @@ class User:
     @staticmethod
     async def is_registered(tid: int) -> bool:
         sql = 'select TID, TimeToUP, TimeToSleep, NotificationTime, Node, CreatedDate from users where TID=$1'
-        values = await get_conn().fetch(sql, tid)
+        values = await get_poll().fetch(sql, tid)
         # если пользователя нет в базе, создаем запись
         if len(values) == 0:
             return False
@@ -85,7 +85,7 @@ class User:
     @staticmethod
     async def get_all_users() -> List['User']:
         sql = 'select TID, TimeToUP, TimeToSleep, NotificationTime, Node, CreatedDate from users'
-        users = await get_conn().fetch(sql)
+        users = await get_poll().fetch(sql)
 
         # # если есть, возвращаем объект пользователя
         result = []

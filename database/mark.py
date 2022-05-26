@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from database.connect import get_conn
+from database.connect import get_poll
 
 
 class Mark:
@@ -19,7 +19,7 @@ class Mark:
     @staticmethod
     async def get_all_by_tid(tid) -> List['Mark']:
         sql = 'select UID, TID, Value, Timestamp from marks where TID=$1 order by UID desc'
-        marks = await get_conn().fetch(sql, tid)
+        marks = await get_poll().fetch(sql, tid)
 
         result = []
         for mark in marks:
@@ -29,12 +29,12 @@ class Mark:
     @staticmethod
     async def get_last_by_tid(tid) -> Optional['Mark']:
         sql = 'select UID, TID, Value, Timestamp from marks where TID=$1 order by UID desc limit 1'
-        marks = await get_conn().fetch(sql, tid)
+        marks = await get_poll().fetch(sql, tid)
 
         if len(marks) == 1:
             return Mark(*marks[0])
         return None
 
     async def delete(self):
-        await get_conn().execute('delete from marks where uid=$1', self.uid)
+        await get_poll().execute('delete from marks where uid=$1', self.uid)
 

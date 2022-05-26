@@ -1,6 +1,6 @@
 from typing import List
 
-from database.connect import get_conn
+from database.connect import get_poll
 
 
 class Advice:
@@ -16,19 +16,19 @@ class Advice:
 
     @staticmethod
     async def create(mark: int, advice: str):
-        await get_conn().execute('insert into advices (Mark, Advice) values ($1, $2)', mark, advice)
+        await get_poll().execute('insert into advices (Mark, Advice) values ($1, $2)', mark, advice)
 
     async def delete(self):
         await Advice.delete_by_uid(self.uid)
 
     @staticmethod
     async def delete_by_uid(uid: int):
-        await get_conn().execute('delete from advices where uid=$1', uid)
+        await get_poll().execute('delete from advices where uid=$1', uid)
 
     @staticmethod
     async def get_all_advices() -> List['Advice']:
         sql = 'select UID, Mark, Advice from advices order by UID desc'
-        advices = await get_conn().fetch(sql)
+        advices = await get_poll().fetch(sql)
 
         result = []
         for advice in advices:
@@ -38,7 +38,7 @@ class Advice:
     @staticmethod
     async def get_advices_by_mark(mark: int) -> List['Advice']:
         sql = 'select UID, Mark, Advice from advices where Mark=$1 order by UID desc'
-        advices = await get_conn().fetch(sql, mark)
+        advices = await get_poll().fetch(sql, mark)
 
         result = []
         for advice in advices:
