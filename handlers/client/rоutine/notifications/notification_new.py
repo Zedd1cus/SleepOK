@@ -24,11 +24,6 @@ class RoutineFSM(StatesGroup):
     check_state = State()
     push_data_base = State()
 
-async def send_graphs(): # эту ф-цию вызывать после того, как user нажал на /rise и подтвердил
-    if datetime.datetime.today().weekday() == 0:
-        pass # нужно получить данные за прошлую неделю - построить графики - отправить пользователю
-
-
 async def send_notification(tid):
     await bot.send_message(tid, "Как ваши ощущения?", reply_markup=five_states_kb_scenario)
 

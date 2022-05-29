@@ -16,6 +16,7 @@ from handlers.client.settings import start_settings
 
 # Routine module
 from handlers.client.rоutine.notifications import notifications, notification_new
+from handlers.client.rоutine.graphs import graphs
 
 # UI module
 from handlers.client.userinterface.settings import settings
@@ -75,6 +76,7 @@ def start_settings_handlers(dp: Dispatcher):
 
 
 def new_routine_handlers(dp: Dispatcher):
+    dp.register_message_handler(graphs.send_graphs, commands=['graph'])
     dp.register_message_handler(notification_new.send_notification,
                                 state=notification_new.RoutineFSM.check_state)
     dp.register_message_handler(notification_new.command_are_you_sure,

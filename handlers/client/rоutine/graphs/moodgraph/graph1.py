@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
+import os
 
-def states_graph(mean_values:list = None):
+async def states_graph(mean_values:list = None):
     fig, ax = plt.subplots(figsize=(12,6))
     position = [i for i in range(7)]
     ax.plot(position, mean_values, marker='o', markersize=15, linewidth=5)
@@ -19,6 +20,5 @@ def states_graph(mean_values:list = None):
 
     # добавляем сетку
     ax.grid()
-    plt.show()
 
-states_graph([2, 3, 4, 5, 2, 3, 5])
+    return fig, ax
