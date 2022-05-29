@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 
 # Client start module
-from handlers.basehandlers.start.start import StartFMS
+# from handlers.basehandlers.start.start import StartFMS
 
 # User interface moduls
 from handlers.client.userinterface.help import help
@@ -56,7 +56,7 @@ def routine_handlers(dp:Dispatcher):
 # Start settings handlers
 def start_settings_handlers(dp: Dispatcher):
     # Rise register handlers
-    dp.register_message_handler(start_settings.command_rise, commands=['client'], state=StartFMS.start_state)
+    dp.register_message_handler(start_settings.command_rise, commands=['start'])
     dp.register_message_handler(start_settings.command_set_up_rise,
                                 state=ClientFMS.settings_rise)
     dp.register_message_handler(start_settings.command_confirmation_rise, commands=['Yes', 'No'],

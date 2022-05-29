@@ -23,7 +23,7 @@ array_of_time_of_notification = None
 
 
 def verify_time_of_notification(time: str) -> bool:
-    regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+    regex = "^([01][0-9]|2[0-3]):[0-5][0-9]$"
     p = re.compile(regex)
     if time == "":
         return False
@@ -71,9 +71,13 @@ async def get_verify_time_of_notification_message(message: types.Message, row_of
 
 
 async def command_rise(message: types.Message):
-    await get_rise_message(message)
-    await get_format_time_message(message)
-    await ClientFMS.settings_rise.set()
+    # Сюда добавить проверку на id админа, если да, то часть админа,
+    # если нет, то часть клиента
+    # is_user_in = await User.is_registered(message.from_user.id)
+    if True:
+        await get_rise_message(message)
+        await get_format_time_message(message)
+        await ClientFMS.settings_rise.set()
 
 
 async def command_set_up_rise(message: types.Message):

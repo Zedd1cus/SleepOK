@@ -16,7 +16,6 @@ async def one_startup(_) -> None:
 async def started(_):
     await handle_all_players()
 
-start.start_handler(dp)
 client.start_settings_handlers(dp)
 client.new_routine_handlers(dp)
 client.user_interface_handlers(dp)

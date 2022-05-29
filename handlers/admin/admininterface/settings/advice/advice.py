@@ -3,10 +3,11 @@ from handlers.basehandlers.back import back
 from handlers.admin.adminscenario.admin_states_scenario import AdminFSM
 from src.create_bot import bot
 from aiogram.dispatcher import FSMContext
-from keyboards.client_kb import admin_ui_kb_scenario, \
-    admin_advice_interface_kb_scenario, five_states_kb_scenario, \
-    confirmation_kb_scenario, admin_show_interface_kb_scenario, \
-    admin_settings_kb_scenario
+from keyboards.admin_kb import admin_ui_kb_scenario, \
+    admin_advice_interface_kb_scenario, admin_show_interface_kb_scenario, \
+    admin_settings_kb_scenario, admin_time_of_advices_kb_scenario
+from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario
+
 from database.advice import Advice
 
 
@@ -19,11 +20,6 @@ dict_of_marks = {'/Плохо': 1,
 save_id = None
 save_message = None
 save_mark = None
-
-
-async def show_advice(message: types.Message, advice: str):
-    await bot.send_message(message.chat.id, f'{advice[1:]}:\n'
-                                            'Советы...')
 
 
 async def get_create_message(message: types.Message):
@@ -53,6 +49,7 @@ async def command_advice(message: types.Message):
         await bot.send_message(message.chat.id, "Это интерфейс советов.",
                                reply_markup=admin_advice_interface_kb_scenario)
         await AdminFSM.advice_interface_state.set()
+
     elif message.text == '/back':
         await back.command_back(message, admin_ui_kb_scenario)
         await AdminFSM.settings_state.set()
@@ -62,6 +59,7 @@ async def command_advice_interface(message: types.Message):
     if message.text == '/show':
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
+
     elif message.text == '/back':
         await back.command_back(message, admin_settings_kb_scenario)
         await AdminFSM.advice_state.set()
@@ -86,6 +84,10 @@ async def perform_action(message: types.Message):
     elif message.text == '/create':
         await get_create_message(message)
         await AdminFSM.create_interface_state.set()
+
+    elif message.text == '/back':
+        await back.command_back(message, admin_advice_interface_kb_scenario)
+        await AdminFSM.advice_interface_state.set()
 
 
 async def confirmation_for_delete(message: types.Message):

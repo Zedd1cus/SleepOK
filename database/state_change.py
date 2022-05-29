@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from database.connect import get_conn
+from database.connect import get_poll
 
 
 class StateChange:
@@ -23,7 +23,7 @@ class StateChange:
     @staticmethod
     async def get_all_by_tid(tid) -> List['StateChange']:
         sql = 'select UID, TID, State, Timestamp from state_changes where TID=$1 order by UID desc'
-        states = await get_conn().fetch(sql, tid)
+        states = await get_poll().fetch(sql, tid)
 
         result = []
         for state in states:
@@ -33,11 +33,11 @@ class StateChange:
     @staticmethod
     async def get_last_by_tid(tid) -> Optional['StateChange']:
         sql = 'select UID, TID, State, Timestamp from state_changes where TID=$1 order by UID desc limit 1'
-        states = await get_conn().fetch(sql, tid)
+        states = await get_poll().fetch(sql, tid)
 
         if len(states) == 1:
             return StateChange(*states[0])
         return None
 
     async def delete(self):
-        await get_conn().execute('delete from state_changes where uid=$1', self.uid)
+        await get_poll().execute('delete from state_changes where uid=$1', self.uid)

@@ -32,8 +32,8 @@ CREATE INDEX IF NOT EXISTS state_changes_uid ON state_changes(UID);
 -- советы для каждой оценки
 CREATE TABLE IF NOT EXISTS advices (
     UID SERIAL PRIMARY KEY ,
-    Mark INT, -- настроение 1-5
+    Marks INT[] DEFAULT '{}', -- настроение 1-5
+    Hours INT[] DEFAULT '{}',
     Advice TEXT -- текст совета
 );
 CREATE INDEX IF NOT EXISTS advices_uid ON advices(UID);
-CREATE INDEX IF NOT EXISTS advices_mark ON advices(Mark);
