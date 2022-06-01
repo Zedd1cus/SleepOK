@@ -26,10 +26,14 @@ async def send_graphs(message: types.Message): # эту ф-цию вызыват
         rises = []
         downs = []
         for state_ch in st_changes:
-            if state_ch.state == 1:
-                rises.append(f'{state_ch.timestamp.hour}:{state_ch.timestamp.minute}')
-            if state_ch.state == 0:
-                downs.append(f'{state_ch.timestamp.hour}:{state_ch.timestamp.minute}')
+            if state_ch[0] is not None:
+                rises.append(f'{state_ch[0].timestamp.hour}:{state_ch[0].timestamp.minute}')
+            else:
+                rises.append(None)
+            if state_ch[1] is not None:
+                downs.append(f'{state_ch[1].timestamp.hour}:{state_ch[1].timestamp.minute}')
+            else:
+                downs.append(None)
         tms = [rises, downs, [user.time_to_up, user.time_to_sleep]]
         await save_graphs(sr_states_7days, tms)
         file1 = open('temp_graph.png', 'rb')
