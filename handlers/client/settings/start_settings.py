@@ -160,7 +160,7 @@ async def command_confirmation_time_of_notification(message: types.Message, stat
     if message.text == '/Yes':
         #await connect.init()
 
-        #user = await User.get(message.from_user.id)
+        #user = await User.get(message.from_user.id) # само же создает юзера в бд
 
         # async with state.proxy() as data:
         #     data['array_of_time_of_notification'] = array_of_time_of_notification

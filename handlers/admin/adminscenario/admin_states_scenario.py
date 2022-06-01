@@ -22,6 +22,7 @@ class AdminFSM(StatesGroup):
 
 
 async def command_admin(message: types.Message):
-    await bot.send_message(message.chat.id, "This is admin!", reply_markup=admin_ui_kb_scenario)
-    await AdminFSM.settings_state.set()
+    if True: # if message.from_user.id == admin_user:
+        await bot.send_message(message.chat.id, "This is admin!", reply_markup=admin_ui_kb_scenario)
+        await AdminFSM.settings_state.set()
 

@@ -77,16 +77,11 @@ def get_state_id(message: types.Message) -> int:
 async def handle_player(tid: int): # для польз вне бд asyncio.create_task(handle_player(user.tid))
     await connect.init()
     while True:
-
         player = await User.get(tid)
-
         await asyncio.sleep(get_sleep_time(player.notification_time))
-
         player_updated = await User.get(tid)
-
         if player.notification_time != player_updated.notification_time:
             continue
-
         await RoutineFSM.check_state.set()
         await send_notification(tid)
 
@@ -95,7 +90,7 @@ async def handle_all_players(): # должна запускаться с сам�
     await connect.init()
     for user in await User.get_all_users():
         asyncio.create_task(handle_player(user.tid))
-        await user_interface.command_base_ui(user.tid)
+        await user_interface.command_base_ui(user.tid) # это если юзер уже настроен, если нет, то он и не попадает в handle
 
 
 if __name__ == '__main__':

@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram import types
 from handlers.basehandlers.back import back
 from handlers.admin.adminscenario.admin_states_scenario import AdminFSM
@@ -139,21 +141,23 @@ async def create(message: types.Message):
 
 
 
-
-
-
+time_arrays = [[i for i in range(5, 11)], [i for i in range(11, 15)], [i for i in range(15, 20)], [i for i in range(20, 5)]]
 
 
 
 def create_advice_by_mark(mark: int, some_advice: str):
-    # Advice.create(mark, some_advice)
-    pass
+    hour = datetime.datetime.now().hour
+    for arr in time_arrays:
+        if hour in arr:
+            Advice.create([mark], arr, some_advice)
+            break
 
-def delete_advice_by_mark_and_id(mark: int, id_advice: int):
-    pass
+def delete_advice_by_mark_and_hour(mark: int, id_advice: int):
+
+    Advice.delete_by_uid()
 
 def get_advice_by_mark_and_id(mark: int, id_advice: int):
-    pass
+    Advice.get_advices_by_mark_and_hour()
 
 
 
