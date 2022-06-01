@@ -30,7 +30,7 @@ async def starter(message: types.Message):
     # user = await User.get(message.from_user.id)
     # notif_times = user.notification_time
     #notif_times = [datetime.time(16, 14), datetime.time(16, 16)]
-    await hand_time(message.chat.id) #, notif_times)
+    await hand_time(message.from_user.id) #, notif_times)
 
 async def hand_time(chat_id, times=None):
     times = [datetime.time(16, 53), datetime.time(16, 54)]
@@ -52,16 +52,16 @@ async def command_five_sts(chat_id): #  time_to_check
 async def command_are_you_sure(message: types.Message, state:FSMContext): # are_you_sure
     async with state.proxy() as data:
         data['user_state'] = message.text
-    await bot.send_message(message.chat.id, "Вы уверены?", reply_markup=confirmation_kb_scenario)
+    await bot.send_message(message.from_user.id, "Вы уверены?", reply_markup=confirmation_kb_scenario)
     await RoutineFSM.push_data_base.set()
 
 
 async def delimiter_yes_no(message: types.Message, state): # push_data_base
     if message.text == '/Yes':
-        await push_to_database(message.chat.id, state)
+        await push_to_database(message.from_user.id, state)
     else:
         await RoutineFSM.time_to_check.set()
-        await command_five_sts(message.chat.id)
+        await command_five_sts(message.from_user.id)
 
 def get_state_id(message: types.Message) -> int:
     for button in state_buttons:

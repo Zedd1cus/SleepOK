@@ -9,12 +9,12 @@ from handlers.client.userinterface import user_interface
 
 
 async def get_ui_settings_message(message: types.Message):
-    await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе настроек.",
+    await bot.send_message(message.from_user.id, "Вы находитесь в интерфейсе настроек.",
                            reply_markup=client_settings_kb_scenario)
 
 
 async def get_ui_confirmation_message(message: types.Message):
-    await bot.send_message(message.chat.id, 'Вы уверены в этом?', reply_markup=confirmation_kb_scenario)
+    await bot.send_message(message.from_user.id, 'Вы уверены в этом?', reply_markup=confirmation_kb_scenario)
 
 
 async def command_settings(message: types.Message):
