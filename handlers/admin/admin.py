@@ -28,9 +28,11 @@ def settings_handlers(dp: Dispatcher):
                                 'Выше_среднего', 'Отлично', 'back'], state=AdminFSM.show_interface_state)
 
     dp.register_message_handler(advice.command_time_interface, commands=['5:00-11:00', '11:00-15:00',
-                                                                         '15:00-20:00', '20:00-5:00', 'back'])
-    dp.register_message_handler(advice.perform_action, commands=['delete', 'create', 'back'],
+                                                                         '15:00-20:00', '20:00-5:00', 'back'],
                                 state=AdminFSM.action_interface_state)
+
+    dp.register_message_handler(advice.perform_action, commands=['delete', 'create', 'back'],
+                                state=AdminFSM.time_interface_state)
 
     dp.register_message_handler(advice.confirmation_for_delete, state=AdminFSM.delete_interface_state)
 

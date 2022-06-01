@@ -20,6 +20,7 @@ dict_of_marks = {'/Плохо': 1,
 save_id = None
 save_message = None
 save_mark = None
+save_time = None
 
 
 async def get_create_message(message: types.Message):
@@ -70,19 +71,21 @@ async def command_advice_interface(message: types.Message):
         await AdminFSM.advice_state.set()
 
 
-async def command_time_interface(message: types.Message):
-    pass
-
-
 async def command_mark_interface(message: types.Message):
-    """get all advices by mark"""
     global save_mark
     save_mark = message.text[1:]
-    await bot.send_message(message.chat.id, message.text[1:])
+    await get_time_message(message)
+    await AdminFSM.action_interface_state.set()
+
+
+async def command_time_interface(message: types.Message):
+    global save_time
+    save_time = message.text[1:]
+    await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
     await bot.send_message(message.chat.id, 'Совет 1')
     await bot.send_message(message.chat.id, 'Совет 2')
     await bot.send_message(message.chat.id, 'Совет 3', reply_markup=admin_show_interface_kb_scenario)
-    await AdminFSM.action_interface_state.set()
+    await AdminFSM.time_interface_state.set()
 
 
 async def perform_action(message: types.Message):
