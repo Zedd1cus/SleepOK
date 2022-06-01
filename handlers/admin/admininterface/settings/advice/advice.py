@@ -31,6 +31,11 @@ async def get_show_message(message: types.Message):
                            reply_markup=five_states_kb_scenario)
 
 
+async def get_time_message(message: types.Message):
+    await bot.send_message(message.chat.id, 'Выберите промежуток времени для советов.',
+                           reply_markup=admin_time_of_advices_kb_scenario)
+
+
 async def get_delete_message(message: types.Message):
     await bot.send_message(message.chat.id, 'Укажите номер совета, который вы хотите удалить.')
 
@@ -63,6 +68,10 @@ async def command_advice_interface(message: types.Message):
     elif message.text == '/back':
         await back.command_back(message, admin_settings_kb_scenario)
         await AdminFSM.advice_state.set()
+
+
+async def command_time_interface(message: types.Message):
+    pass
 
 
 async def command_mark_interface(message: types.Message):

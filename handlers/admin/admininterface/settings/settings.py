@@ -6,7 +6,7 @@ from handlers.admin.adminscenario import admin_states_scenario
 from keyboards.admin_kb import admin_settings_kb_scenario
 
 
-async def command_settings(message: types.Message, state: FSMContext):
+async def command_settings(message: types.Message):
     await bot.send_message(message.chat.id, "This is settings!",
                            reply_markup=admin_settings_kb_scenario)
     await admin_states_scenario.AdminFSM.advice_state.set()
