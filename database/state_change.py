@@ -39,5 +39,15 @@ class StateChange:
             return StateChange(*states[0])
         return None
 
+    @staticmethod
+    async def get_by_tid(tid, start: datetime, end: datetime):
+        sql = 'select UID, TID, State, Timestamp from state_changes where TID=$1 and timestamp > $2 and timestamp < $3 order by UID desc'
+        states = await get_poll().fetch(sql, tid, start, end)
+
+        result = []
+        for state in states:
+            result.append(StateChange(*state))
+        return result
+
     async def delete(self):
         await get_poll().execute('delete from state_changes where uid=$1', self.uid)

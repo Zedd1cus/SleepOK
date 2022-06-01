@@ -94,6 +94,7 @@ class User:
         return result
 
     async def get_last_7_marks(self) -> List[float]:
+        """ Возвращает список из 7 float - это средние состояния за последние 7 дней, не включая сегодняшний """
         n = datetime.now()
         end = datetime.replace(n, n.year, n.month, n.day, 0, 0, 0, 0)
         start = end - timedelta(days=7)
@@ -113,3 +114,10 @@ class User:
             else:
                 result.append(counter[day][0] / counter[day][1])
         return result
+
+    async def get_last_7_state_changes(self) -> List[StateChange]:
+        """ Возвращает список StateChange (встал/лег) за последние 7 дней, не включая сегодняшний """
+        n = datetime.now()
+        end = datetime.replace(n, n.year, n.month, n.day, 0, 0, 0, 0)
+        start = end - timedelta(days=7)
+        return await StateChange.get_by_tid(self.tid, start, end)
