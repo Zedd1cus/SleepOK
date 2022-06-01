@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from typing import List, Optional
 
 from database.connect import get_poll
@@ -91,4 +91,25 @@ class User:
         result = []
         for user in users:
             result.append(User(*user))
+        return result
+
+    async def get_last_7_marks(self) -> List[float]:
+        n = datetime.now()
+        end = datetime.replace(n, n.year, n.month, n.day, 0, 0, 0, 0)
+        start = end - timedelta(days=7)
+        marks = await Mark.get_by_tid(self.tid, start, end)
+
+        counter = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+        for day in range(7):
+            for mark in marks:
+                if (start + timedelta(days=day)) < mark.timestamp < (start + timedelta(days=day + 1)):
+                    counter[day][0] += mark.value
+                    counter[day][1] += 1
+
+        result = []
+        for day in range(7):
+            if counter[day][1] == 0:
+                result.append(0)
+            else:
+                result.append(counter[day][0] / counter[day][1])
         return result
