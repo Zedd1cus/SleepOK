@@ -40,8 +40,8 @@ class User:
     async def add_mark(self, mark: int):
         await get_poll().execute('insert into marks (TID, Value) values ($1, $2)', self.tid, mark)
 
-    async def add_state_change(self, state: int):
-        await get_poll().execute('insert into state_changes (TID, State) values ($1, $2)', self.tid, state)
+    async def add_state_change(self, state: int, timestamp: datetime = datetime.now()):
+        await get_poll().execute('insert into state_changes (TID, State, Timestamp) values ($1, $2, $3)', self.tid, state, timestamp)
 
     async def get_last_mark(self) -> Optional[Mark]:
         return await Mark.get_last_by_tid(self.tid)
