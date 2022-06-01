@@ -9,20 +9,18 @@ from keyboards.admin_kb import admin_ui_kb_scenario, \
     admin_advice_interface_kb_scenario, admin_show_interface_kb_scenario, \
     admin_settings_kb_scenario, admin_time_of_advices_kb_scenario
 from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario
-
+from handlers.client.rоutine.notifications.notification_new import get_state_id
+from keyboards.admin_kb import kb_5_11_advices, kb_11_15_advices, kb_20_5_advices, kb_15_20_advices
 from database.advice import Advice
 
 
-dict_of_marks = {'/Плохо': 1,
-                 '/Ниже_среднего': 2,
-                 '/Средне': 3,
-                 '/Выше_среднего': 4,
-                 '/Отлично': 5}
+# dict_of_marks = {'/Плохо': 1,
+#                  '/Ниже_среднего': 2,
+#                  '/Средне': 3,
+#                  '/Выше_среднего': 4,
+#                  '/Отлично': 5}
 
-save_id = None
-save_message = None
-save_mark = None
-save_time = None
+keyboards_to_time = [kb_5_11_advices, kb_11_15_advices, kb_20_5_advices, kb_15_20_advices]
 
 
 async def get_create_message(message: types.Message):
@@ -74,7 +72,7 @@ async def command_advice_interface(message: types.Message):
 
 
 async def command_mark_interface(message: types.Message, state: FSMContext):
-    save_mark = message.text[1:]
+    save_mark = get_state_id(message.text)
     async with state.proxy() as data:
         data['mark'] = save_mark
     await get_time_message(message)
@@ -82,15 +80,19 @@ async def command_mark_interface(message: types.Message, state: FSMContext):
 
 
 async def command_time_interface(message: types.Message, state: FSMContext):
-    save_time = message.text[1:]
+    save_time = None
+    for keyb in keyboards_to_time:
+        if message.text == keyb.text:
+            save_time = keyb['index']
+            break
     async with state.proxy() as data:
         save_mark = data['mark']
         data['time'] = save_time
     await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
-    Advice.get_advices_by_mark_and_hour()
-    await bot.send_message(message.chat.id, 'Совет 1')
-    await bot.send_message(message.chat.id, 'Совет 2')
-    await bot.send_message(message.chat.id, 'Совет 3', reply_markup=admin_show_interface_kb_scenario)
+    advs = await Advice.get_advices_by_mark_and_hour(save_mark, save_time)
+    for adv in advs:
+        await bot.send_message(message.chat.id, adv.advice)
+    await bot.send_message(message.chat.id, reply_markup=admin_show_interface_kb_scenario)
     await AdminFSM.time_interface_state.set()
 
 
@@ -139,6 +141,8 @@ async def confirmation_for_create(message: types.Message, state: FSMContext):
 async def create(message: types.Message, state: FSMContext):
     """create advice by mark"""
     if message.text == '/Yes':
+        async with state.proxy() as data:
+            save_message = data['message']
         await bot.send_message(message.chat.id, 'Вы добавили данный совет:\n'
                                                 f'{save_message}')
         await get_show_message(message)
