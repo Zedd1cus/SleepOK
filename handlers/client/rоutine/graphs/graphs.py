@@ -31,7 +31,7 @@ async def send_graphs(message: types.Message): # эту ф-цию вызыват
             else:
                 rises.append(None)
             if state_ch[1] is not None:
-                downs.append(f'{state_ch[1].timestamp.hour}:{state_ch[1].timestamp.minute}')
+                downs.append(f'{state_ch[1].timestamp.hour}:{state_ch[0].timestamp.minute}')
             else:
                 downs.append(None)
         tms = [rises, downs, [user.time_to_up, user.time_to_sleep]]
