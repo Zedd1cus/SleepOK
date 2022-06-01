@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 from database.connect import get_poll
@@ -34,6 +34,16 @@ class Mark:
         if len(marks) == 1:
             return Mark(*marks[0])
         return None
+
+    @staticmethod
+    async def get_by_tid(tid, start: datetime, end: datetime):
+        sql = 'select UID, TID, Value, Timestamp from marks where TID=$1 and timestamp > $2 and timestamp < $3 order by UID desc'
+        marks = await get_poll().fetch(sql, tid, start, end)
+
+        result = []
+        for mark in marks:
+            result.append(Mark(*mark))
+        return result
 
     async def delete(self):
         await get_poll().execute('delete from marks where uid=$1', self.uid)
