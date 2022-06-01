@@ -24,15 +24,51 @@ async def command_rise(message: types.Message, state: FSMContext):
     if last is None or last.timestamp.day != now_time.day:
         async with state.proxy() as data:
             data['rise'] = now_time
-        await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
-        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
-        await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
-        await ClientFMS.ui_rise_state.set()
-
+        await bot.send_message(message.chat.id, "Вы встали сейчас?", reply_markup=confirmation_kb_scenario)
+        # await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
+        # await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
+        # await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
+        # await ClientFMS.ui_rise_state.set()
+        await ClientFMS.rise_agree.set()
     else:
         await bot.send_message(message.chat.id, "Вы не можете нажать эту кнопку до завтрашнего дня.",
                                reply_markup=client_ui_kb_scenario)
         await ClientFMS.selection_state.set()
+
+async def rise_agree(message: types.Message, state: FSMContext):
+    if message.text == '/Yes':
+        await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
+        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
+        await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
+        await ClientFMS.ui_rise_state.set()
+    else:
+        await bot.send_message(message.chat.id, "Напишите время, во сколько вы встали.")
+        await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
+        await ClientFMS.rise_changed.set()
+
+async def rise_changed(message: types.Message, state: FSMContext):
+    if len(message.text) == 4:
+        save_time_of_rise = '0' + message.text
+    else:
+        save_time_of_rise = message.text
+    async with state.proxy() as data:
+        data['rise'] = datetime.datetime.today().replace(hour=int(save_time_of_rise[:2]), minute=int(save_time_of_rise[3:]))
+    if verify_time_of_notification(save_time_of_rise):
+        await bot.send_message(message.chat.id, f"Вы увeрены, что встали в {save_time_of_rise}?",
+                               reply_markup=confirmation_kb_scenario)
+        await ClientFMS.rise_changed_agree.set()
+    else:
+        await bot.send_message(message.chat.id, 'Введен неверный формат!')
+        await command_rise(message, state)
+
+async def rise_changed_agree(message: types.Message, state: FSMContext):
+    if message.text == '/Yes':
+        await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
+        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
+        await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
+        await ClientFMS.ui_rise_state.set()
+    else:
+        await rise_agree(message, state)
 
 
 async def command_down(message: types.Message, state: FSMContext):
@@ -61,7 +97,9 @@ async def command_confirmation(message: types.Message, state: FSMContext):
             await graphs.send_graphs(message)
 
     elif message.text == '/No':
-        await command_rise(message, state)
+        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
+        await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
+        await ClientFMS.ui_rise_state.set()
 
 
 

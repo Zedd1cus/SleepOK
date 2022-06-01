@@ -46,6 +46,9 @@ def user_interface_handlers(dp: Dispatcher):
     dp.register_message_handler(rise.command_down, state=ClientFMS.ui_rise_state)
     dp.register_message_handler(rise.command_confirmation, commands=['Yes', 'No'],
                                 state=ClientFMS.ui_down_state)
+    dp.register_message_handler(rise.rise_agree, commands=['Yes', 'No'],  state=ClientFMS.rise_agree)
+    dp.register_message_handler(rise.rise_changed, state=ClientFMS.rise_changed)
+    dp.register_message_handler(rise.rise_changed_agree, commands=['Yes', 'No'], state=ClientFMS.rise_changed_agree)
 
 # Routine handlers
 def routine_handlers(dp:Dispatcher):

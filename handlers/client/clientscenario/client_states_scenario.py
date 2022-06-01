@@ -9,6 +9,9 @@ class ClientFMS(StatesGroup):
     ui_settings_state = State()
     ui_reset_state = State()
 
+    rise_agree = State()
+    rise_changed = State()
+    rise_changed_agree = State()
 
     # # UI Help
     # ui_help_state = State()
