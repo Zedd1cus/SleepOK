@@ -1,5 +1,6 @@
 from aiogram import types
-
+from database.user import User
+from database.state_change import StateChange
 from handlers.client.userinterface import user_interface
 from keyboards.client_kb import client_ui_kb_scenario, confirmation_kb_scenario
 from src.create_bot import bot
@@ -11,11 +12,15 @@ save_time_of_down = None
 
 
 async def command_rise(message: types.Message):
+    # tid = message.from_user.id
+    # user = await User.get(tid)
+    # last = await user.get_last_state()
+    # is_wake_up = last.state == StateChange.WAKE_UP
     if True:
+
         await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.ui_rise_state.set()
-
 
     else:
         await bot.send_message(message.chat.id, "Вы не можете нажать эту кнопку до завтрашнего дня.",
