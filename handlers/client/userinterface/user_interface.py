@@ -18,7 +18,7 @@ async def command_base_ui(tid):
     await ClientFMS.selection_state.set()
 
 
-async def command_user_selection(message: types.Message):
+async def command_user_selection(message: types.Message, state:FSMContext):
     if message.text == '/help':
         await command_help(message)
 
@@ -26,7 +26,7 @@ async def command_user_selection(message: types.Message):
         await command_settings(message)
 
     elif message.text == '/rise':
-        await command_rise(message)
+        await command_rise(message, state)
 
 
 def base_ui_handlers(dp: Dispatcher):
