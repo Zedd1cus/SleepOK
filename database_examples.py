@@ -110,5 +110,16 @@ async def check_changes():
     print(len(advices), random.choice(advices))
 
 
+async def check_advices():
+    await connect.init()
+    u = await User.get(12345)
+
+    last = await u.get_last_state()
+    is_wake_up = last.state == StateChange
+
+    print(await u.get_last_7_marks())
+    print(await u.get_last_7_state_changes())
+
+
 # Запуск async функции (примера)
-loop.run_until_complete(check_changes())
+loop.run_until_complete(check_advices())
