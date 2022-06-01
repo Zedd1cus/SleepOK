@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram import types
 from database.user import User
 from database.state_change import StateChange
+from handlers.client.rоutine.graphs import graphs
 from handlers.client.userinterface import user_interface
 from keyboards.client_kb import client_ui_kb_scenario, confirmation_kb_scenario
 from src.create_bot import bot
@@ -14,7 +15,7 @@ save_time_of_down = None
 
 
 async def command_rise(message: types.Message, state: FSMContext):
-    await connect.init()
+    await connect.init() # это убрать!!!
     tid = message.from_user.id
     user = await User.get(tid)
     last = await user.get_last_state()
@@ -57,7 +58,7 @@ async def command_confirmation(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             await user.add_state_change(StateChange.FALL_ASLEEP, data['down'])
             await user.add_state_change(StateChange.WAKE_UP, data['rise'])
-            await user_interface.command_base_ui(message.chat.id)
+            await graphs.send_graphs(message)
 
     elif message.text == '/No':
         await command_rise(message, state)
