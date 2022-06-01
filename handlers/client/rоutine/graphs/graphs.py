@@ -21,11 +21,17 @@ async def send_graphs(message: types.Message): # эту ф-цию вызыват
     if datetime.datetime.today().weekday() == 0:
         await bot.send_message(tid, 'Новая порция графов!')
         user = await User.get(tid)
-        sr_states_7days = user.get_last_7_marks()
-        stts = [3, 4, 2, 5, 4, 3, 4]
-        tms = [['7:00', '7:30', '8:00', '8:30', '7:40', '7:50', '7:40'],
-            ['23:00', '22:30', '23:30', '22:45', '22:50', '23:40', '23:40'], ['7:00', '22:30']]
-        await save_graphs(stts, tms)
+        sr_states_7days = await user.get_last_7_marks()
+        st_changes = await user.get_last_7_state_changes()
+        rises = []
+        downs = []
+        for state_ch in st_changes:
+            if state_ch.state == 1:
+                rises.append(f'{state_ch.timestamp.hour}:{state_ch.timestamp.minute}')
+            if state_ch.state == 0:
+                downs.append(f'{state_ch.timestamp.hour}:{state_ch.timestamp.minute}')
+        tms = [rises, downs, [user.time_to_up, user.time_to_sleep]]
+        await save_graphs(sr_states_7days, tms)
         file1 = open('temp_graph.png', 'rb')
         file2 = open('temp_graph2.png', 'rb')
         await bot.send_photo(tid, photo=file1)
