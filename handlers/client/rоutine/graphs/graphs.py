@@ -1,5 +1,7 @@
 from handlers.client.rоutine.graphs.moodgraph import graph1
 from handlers.client.rоutine.graphs.timesgraph import graph2
+from handlers.client.userinterface import user_interface
+from database.user import User
 from src.create_bot import bot
 from aiogram import types
 import os
@@ -14,10 +16,12 @@ async def save_graphs(week_states:list, week_times:list):
 
 
 async def send_graphs(message: types.Message): # эту ф-цию вызывать после того, как user нажал на /rise и подтвердил
-    tid = message.chat.id
+                                                # и не
+    tid = message.from_user.id
     if datetime.datetime.today().weekday() == 0:
         await bot.send_message(tid, 'Новая порция графов!')
-        # здесь прописать получение данных за неделю из бд
+        user = await User.get(tid)
+        sr_states_7days = user.get_last_7_marks()
         stts = [3, 4, 2, 5, 4, 3, 4]
         tms = [['7:00', '7:30', '8:00', '8:30', '7:40', '7:50', '7:40'],
             ['23:00', '22:30', '23:30', '22:45', '22:50', '23:40', '23:40'], ['7:00', '22:30']]
@@ -29,6 +33,7 @@ async def send_graphs(message: types.Message): # эту ф-цию вызыват
         file1.close()
         file2.close()
         await del_graph_local()
+    await user_interface.command_base_ui(message.chat.id)
 
 
 async def del_graph_local():
