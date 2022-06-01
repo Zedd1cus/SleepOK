@@ -1,10 +1,4 @@
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram import types
-from aiogram.types import ReplyKeyboardMarkup
-from src.create_bot import bot
-from aiogram.dispatcher import FSMContext
-
-from keyboards.client_kb import client_ui_kb_scenario
 
 
 class ClientFMS(StatesGroup):
@@ -19,9 +13,9 @@ class ClientFMS(StatesGroup):
     # # UI Help
     # ui_help_state = State()
 
-    # # UI Rise or down
-    # ui_rise_state = State()
-    # ui_down_state = State()
+    # UI Rise or down
+    ui_rise_state = State()
+    ui_down_state = State()
 
     # Start settings
     settings_rise = State()

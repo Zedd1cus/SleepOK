@@ -27,7 +27,7 @@ from handlers.client.userinterface.user_interface import command_base_ui, comman
 def base_ui_handlers(dp: Dispatcher):
     dp.register_message_handler(command_base_ui, state=None)
     dp.register_message_handler(command_user_selection,
-                                commands=['help', 'rise', 'down', 'settings'],
+                                commands=['help', 'rise', 'settings'],
                                 state=ClientFMS.selection_state)
 
 
@@ -42,6 +42,10 @@ def user_interface_handlers(dp: Dispatcher):
     dp.register_message_handler(settings.command_confirmation_reset, commands=['Yes', 'No'],
                                 state=ClientFMS.ui_reset_state)
 
+    # Rise and down
+    dp.register_message_handler(rise.command_down, state=ClientFMS.ui_rise_state)
+    dp.register_message_handler(rise.command_confirmation, commands=['Yes', 'No'],
+                                state=ClientFMS.ui_down_state)
 
 # Routine handlers
 def routine_handlers(dp:Dispatcher):

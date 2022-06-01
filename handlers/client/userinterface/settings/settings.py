@@ -27,7 +27,7 @@ async def command_reset(message: types.Message, state: FSMContext):
         await get_ui_confirmation_message(message)
         await ClientFMS.ui_reset_state.set()
     elif message.text == '/back':
-        await user_interface.command_base_ui(message)
+        await user_interface.command_base_ui(message.chat.id)
 
 
 async def command_confirmation_reset(message: types.Message):
