@@ -94,12 +94,13 @@ class User:
         return result
 
     async def get_last_7_marks(self) -> List[float]:
+        """ Возвращает список из 7 float - это средние состояния за последние 7 дней, не включая сегодняшний """
         n = datetime.now()
         end = datetime.replace(n, n.year, n.month, n.day, 0, 0, 0, 0)
         start = end - timedelta(days=7)
         marks = await Mark.get_by_tid(self.tid, start, end)
 
-        counter = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+        counter = [[0, 0] for _ in range(7)]
         for day in range(7):
             for mark in marks:
                 if (start + timedelta(days=day)) < mark.timestamp < (start + timedelta(days=day + 1)):
@@ -112,4 +113,29 @@ class User:
                 result.append(0)
             else:
                 result.append(counter[day][0] / counter[day][1])
+        return result
+
+    async def get_last_7_state_changes(self) -> List[List[Optional[StateChange]]]:
+        """
+        Возвращает список StateChange (встал/лег) за последние 7 дней, не включая сегодняшний в виде:
+        [
+            [StateChange(встал), StateChange(лег)],
+            ... (всего 7 дней)
+        ]
+
+        Если пользователь не отметился, вместо StateChange будет None
+        """
+        n = datetime.now()
+        end = datetime.replace(n, n.year, n.month, n.day, 5, 0, 0, 0)
+        start = end - timedelta(days=7)
+        states = await StateChange.get_by_tid(self.tid, start, end)
+
+        result = [[None, None] for _ in range(7)]
+        for day in range(7):
+            for state in states:
+                if (start + timedelta(days=day)) < state.timestamp < (start + timedelta(days=day + 1)):
+                    if state.state == StateChange.WAKE_UP:
+                        result[day][0] = state
+                    else:
+                        result[day][1] = state
         return result
