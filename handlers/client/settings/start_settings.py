@@ -23,11 +23,12 @@ array_of_time_of_notification = None
 
 
 def verify_time_of_notification(time: str) -> bool:
-    regex = "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+    regex = "^(([01]?[0-9])|([01][0-9])|2[0-3]):[0-5][0-9]$"
     p = re.compile(regex)
     if time == "":
         return False
     m = re.search(p, time)
+
     if m is None:
         return False
     else:
@@ -82,9 +83,12 @@ async def command_rise(message: types.Message):
 
 async def command_set_up_rise(message: types.Message):
     global time_of_rise
-    time_of_rise = message.text
-    if verify_time_of_notification(message.text):
-        await get_confirmation_message(message, message.text, 'rise')
+    if len(message.text) == 4:
+        time_of_rise = '0' + message.text
+    else:
+        time_of_rise = message.text
+    if verify_time_of_notification(time_of_rise):
+        await get_confirmation_message(message, time_of_rise, 'rise')
         await ClientFMS.settings_set_up_rise.set()
     else:
         await get_wrong_message(message)
@@ -109,9 +113,12 @@ async def command_confirmation_rise(message: types.Message, state: FSMContext):
 
 async def command_set_up_sleep(message: types.Message):
     global time_of_sleep
-    time_of_sleep = message.text
-    if verify_time_of_notification(message.text):
-        await get_confirmation_message(message, message.text, 'sleep')
+    if len(message.text) == 4:
+        time_of_sleep = '0' + message.text
+    else:
+        time_of_sleep = message.text
+    if verify_time_of_notification(time_of_sleep):
+        await get_confirmation_message(message, time_of_sleep, 'sleep')
         await ClientFMS.settings_set_up_sleep.set()
     else:
         await get_wrong_message(message)
@@ -141,7 +148,10 @@ async def command_set_up_time_of_notification(message: types.Message):
 
     for time in array_of_time_of_notification:
         if verify_time_of_notification(time):
-            string_of_time_of_notification += time + '\n'
+            if len(time) == 5:
+                string_of_time_of_notification += time + '\n'
+            else:
+                string_of_time_of_notification += '0' + time + '\n'
         else:
             flag = False
             break

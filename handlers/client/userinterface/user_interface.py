@@ -28,13 +28,10 @@ async def command_user_selection(message: types.Message):
     elif message.text == '/rise':
         await command_rise(message)
 
-    elif message.text == '/down':
-        await command_down(message)
-
 
 def base_ui_handlers(dp: Dispatcher):
     dp.register_message_handler(command_base_ui, state=None)
     dp.register_message_handler(command_user_selection,
-                                commands=['help', 'rise', 'down', 'settings'],
+                                commands=['help', 'rise', 'settings'],
                                 state=ClientFMS.selection_state)
 
