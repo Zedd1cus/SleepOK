@@ -73,17 +73,21 @@ async def command_advice_interface(message: types.Message):
         await AdminFSM.advice_state.set()
 
 
-async def command_mark_interface(message: types.Message):
-    global save_mark
+async def command_mark_interface(message: types.Message, state: FSMContext):
     save_mark = message.text[1:]
+    async with state.proxy() as data:
+        data['mark'] = save_mark
     await get_time_message(message)
     await AdminFSM.action_interface_state.set()
 
 
-async def command_time_interface(message: types.Message):
-    global save_time
+async def command_time_interface(message: types.Message, state: FSMContext):
     save_time = message.text[1:]
+    async with state.proxy() as data:
+        save_mark = data['mark']
+        data['time'] = save_time
     await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
+    Advice.get_advices_by_mark_and_hour()
     await bot.send_message(message.chat.id, 'Совет 1')
     await bot.send_message(message.chat.id, 'Совет 2')
     await bot.send_message(message.chat.id, 'Совет 3', reply_markup=admin_show_interface_kb_scenario)
@@ -104,31 +108,35 @@ async def perform_action(message: types.Message):
         await AdminFSM.advice_interface_state.set()
 
 
-async def confirmation_for_delete(message: types.Message):
-    global save_id
+async def confirmation_for_delete(message: types.Message, state: FSMContext):
     save_id = message.text
+    async with state.proxy() as data:
+        data['id'] = save_id
     await get_confirmation_message(message)
     await AdminFSM.confirmation_for_delete_state.set()
 
 
-async def delete(message: types.Message):
+async def delete(message: types.Message, state: FSMContext):
     """delete advice by id and mark"""
     if message.text == '/Yes':
+        async with state.proxy() as data:
+            save_id = data['id']
         await bot.send_message(message.chat.id, f'Вы удалили совет под номером {save_id}')
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
     elif message.text == '/No':
-        await confirmation_for_delete(message)
+        await confirmation_for_delete(message, state)
 
 
-async def confirmation_for_create(message: types.Message):
-    global save_message
+async def confirmation_for_create(message: types.Message, state: FSMContext):
     save_message = message.text
+    async with state.proxy() as data:
+        data['message'] = save_message
     await get_confirmation_message(message)
     await AdminFSM.confirmation_for_create_state.set()
 
 
-async def create(message: types.Message):
+async def create(message: types.Message, state: FSMContext):
     """create advice by mark"""
     if message.text == '/Yes':
         await bot.send_message(message.chat.id, 'Вы добавили данный совет:\n'
@@ -136,7 +144,7 @@ async def create(message: types.Message):
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
     elif message.text == '/No':
-        await confirmation_for_create(message)
+        await confirmation_for_create(message, state)
 
 
 
@@ -153,15 +161,7 @@ def create_advice_by_mark(mark: int, some_advice: str):
             break
 
 def delete_advice_by_mark_and_hour(mark: int, id_advice: int):
-
     Advice.delete_by_uid()
 
 def get_advice_by_mark_and_id(mark: int, id_advice: int):
     Advice.get_advices_by_mark_and_hour()
-
-
-
-
-
-
-

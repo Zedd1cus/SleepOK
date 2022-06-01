@@ -51,7 +51,6 @@ class Advice:
     async def get_advices_by_mark_and_hour(mark: int, hour: int = datetime.datetime.now().hour) -> List['Advice']:
         sql = 'select UID, Marks, Hours, Advice from advices where $1 = ANY (Marks) and $2 = ANY (Hours) order by UID desc'
         advices = await get_poll().fetch(sql, mark, hour)
-
         result = []
         for advice in advices:
             result.append(Advice(*advice))
