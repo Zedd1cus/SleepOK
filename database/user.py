@@ -98,7 +98,6 @@ class User:
         end = datetime.replace(n, n.year, n.month, n.day, 0, 0, 0, 0)
         start = end - timedelta(days=7)
         marks = await Mark.get_by_tid(self.tid, start, end)
-        print(start, end, marks)
 
         counter = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
         for day in range(7):
@@ -106,9 +105,6 @@ class User:
                 if (start + timedelta(days=day)) < mark.timestamp < (start + timedelta(days=day + 1)):
                     counter[day][0] += mark.value
                     counter[day][1] += 1
-                    print(counter)
-
-        print(counter)
 
         result = []
         for day in range(7):
