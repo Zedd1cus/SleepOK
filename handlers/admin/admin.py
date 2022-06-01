@@ -12,7 +12,7 @@ from handlers.admin.admininterface.settings.advice import advice
 # Admin admin handlers
 def settings_handlers(dp: Dispatcher):
     # Admin start
-    dp.register_message_handler(command_admin, commands=['admin'], state=None)
+    dp.register_message_handler(command_admin, commands=['start'], state=None)
 
     # Admin settings
     dp.register_message_handler(settings.command_settings, commands=['settings'],
