@@ -12,7 +12,7 @@ save_time_of_down = None
 
 async def command_rise(message: types.Message):
     if True:
-        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли вчера.")
+        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.ui_rise_state.set()
 
@@ -42,7 +42,7 @@ async def command_down(message: types.Message):
 
 async def command_confirmation(message: types.Message):
     if message.text == '/Yes':
-        await user_interface.command_base_ui(message)
+        await user_interface.command_base_ui(message.chat.id)
 
     elif message.text == '/No':
         await command_rise(message)
