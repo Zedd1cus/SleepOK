@@ -13,6 +13,7 @@ class AdminFSM(StatesGroup):
     time_interface_state = State()
 
     action_interface_state = State()
+
     confirmation_for_delete_state = State()
     confirmation_for_create_state = State()
 

@@ -12,7 +12,7 @@ from handlers.admin.admininterface.settings.advice import advice
 # Admin admin handlers
 def settings_handlers(dp: Dispatcher):
     # Admin start
-    dp.register_message_handler(command_admin, commands=['admin'], state=None)
+    dp.register_message_handler(command_admin, commands=['admin'])
 
     # Admin settings
     dp.register_message_handler(settings.command_settings, commands=['settings'],
@@ -25,10 +25,14 @@ def settings_handlers(dp: Dispatcher):
                                 state=AdminFSM.advice_interface_state)
 
     dp.register_message_handler(advice.command_mark_interface, commands=['Плохо', 'Ниже_среднего', 'Средне',
-                                'Выше_среднего', 'Отлично'], state=AdminFSM.show_interface_state)
+                                'Выше_среднего', 'Отлично', 'back'], state=AdminFSM.show_interface_state)
+
+    dp.register_message_handler(advice.command_time_interface, commands=['5:00-11:00', '11:00-15:00',
+                                                                         '15:00-20:00', '20:00-5:00', 'back'],
+                                state=AdminFSM.action_interface_state)
 
     dp.register_message_handler(advice.perform_action, commands=['delete', 'create', 'back'],
-                                state=AdminFSM.action_interface_state)
+                                state=AdminFSM.time_interface_state)
 
     dp.register_message_handler(advice.confirmation_for_delete, state=AdminFSM.delete_interface_state)
 

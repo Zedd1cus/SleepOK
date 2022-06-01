@@ -169,8 +169,7 @@ async def command_confirmation_time_of_notification(message: types.Message, stat
         #     await user.set_notification_time([datetime.time.fromisoformat(k) for k in data['array_of_time_of_notification']])
         #
         # asyncio.create_task(handle_player(user.tid))
-        await state.finish()
-        await user_interface.command_base_ui(message)
+        await user_interface.command_base_ui(message.chat.id)
     else:
         await get_time_of_notification_message(message)
         await ClientFMS.settings_confirmation_sleep.set()
