@@ -105,7 +105,7 @@ async def command_time_interface(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             save_mark = data['mark']
             data['time'] = save_time
-        await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
+        await bot.send_message(message.chat.id, f'Советы {dict_of_marks[save_mark]} и "{save_time_for_message}":')
         advs = await Advice.get_advices_by_mark_and_hour(save_mark, save_time)
         count = 0
         ids = []
@@ -133,9 +133,8 @@ async def perform_action(message: types.Message, state: FSMContext):
         await AdminFSM.create_interface_state.set()
 
     elif message.text == '/Назад':
-        async with state.proxy() as data:
-            await get_time_message(message, dict_of_marks[data['mark']])
-            await AdminFSM.action_interface_state.set()
+        await get_show_message(message)
+        await AdminFSM.show_interface_state.set()
 
 
 async def confirmation_for_delete(message: types.Message, state: FSMContext):
@@ -161,7 +160,7 @@ async def delete(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             save_id = data['id']
         await Advice.delete_by_uid(save_id)
-        await bot.send_message(message.chat.id, f'Вы удалили совет под номером {save_id}.'
+        await bot.send_message(message.chat.id, f'Вы удалили совет под номером "{save_id}"\n'
                                                 f'в {dict_of_marks[data["mark"]]} и "{save_time_for_message}".')
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
