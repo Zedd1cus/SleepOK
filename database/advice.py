@@ -41,7 +41,6 @@ class Advice:
     async def get_advices_by_mark(mark: int) -> List['Advice']:
         sql = 'select UID, Marks, Hours, Advice from advices where $1 = ANY (Marks) order by UID desc'
         advices = await get_poll().fetch(sql, mark)
-
         result = []
         for advice in advices:
             result.append(Advice(*advice))

@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import random
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from src.create_bot import bot
 from aiogram import types
@@ -64,6 +65,11 @@ async def push_to_database(tid, state: FSMContext):
     user = await User.get(tid)
     await user.add_mark(mark)
     print(f'Пользователь {user.tid} отправил состояние {mark} на бд')
+    # получение советов по состоянию 3
+    advices = await Advice.get_advices_by_mark_and_hour(3)
+    # # получение рандомного совета
+    advice = random.choice(advices)
+    await bot.send_message(tid, )
     await state.finish()
     await handle_player(tid)
 
