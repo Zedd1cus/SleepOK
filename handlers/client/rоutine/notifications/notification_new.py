@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import random
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from src.create_bot import bot
 from aiogram import types
@@ -12,13 +13,7 @@ from handlers.client.userinterface import user_interface
 from database.state_change import StateChange
 from database.advice import Advice
 
-state_buttons = []
-state_buttons.append(kb_st_bad)
-state_buttons.append(kb_st_below_average)
-state_buttons.append(kb_st_average)
-state_buttons.append(kb_st_above_average)
-state_buttons.append(kb_st_excellent)
-
+state_buttons = [kb_st_bad, kb_st_below_average, kb_st_average, kb_st_above_average, kb_st_excellent]
 
 class RoutineFSM(StatesGroup):
     check_state = State()
@@ -64,7 +59,11 @@ async def push_to_database(tid, state: FSMContext):
     user = await User.get(tid)
     await user.add_mark(mark)
     print(f'Пользователь {user.tid} отправил состояние {mark} на бд')
-    await state.finish()
+    # получение советов по состоянию 3
+    advices = await Advice.get_advices_by_mark_and_hour(3)
+    # # получение рандомного совета
+    advice = random.choice(advices)
+    await bot.send_message(tid, advice.advice)
     await handle_player(tid)
 
 

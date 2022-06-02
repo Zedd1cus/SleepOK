@@ -52,11 +52,14 @@ def user_interface_handlers(dp: Dispatcher):
 
 # Routine handlers
 def routine_handlers(dp:Dispatcher):
-    dp.register_message_handler(notifications.starter, commands=['notif'], state=None)
+    dp.register_message_handler(graphs.send_graphs_test, commands=['graph'])
+    dp.register_message_handler(notifications.send_notification,
+                                commands=['notif'])
     dp.register_message_handler(notifications.command_are_you_sure,
                                 commands=['Плохо', 'Ниже_среднего', 'Средне', 'Выше_среднего', 'Отлично'],
-                                state=notifications.RoutineFSM.are_you_sure)
-    dp.register_message_handler(notifications.delimiter_yes_no, commands=['No', 'Yes'],
+                                state=notifications.RoutineFSM.check_state)
+    dp.register_message_handler(notifications.delimiter_yes_no,
+                                commands=['Yes', 'No'],
                                 state=notifications.RoutineFSM.push_data_base)
 
 
@@ -83,7 +86,6 @@ def start_settings_handlers(dp: Dispatcher):
 
 
 def new_routine_handlers(dp: Dispatcher):
-    dp.register_message_handler(graphs.send_graphs, commands=['graph'])
     dp.register_message_handler(notification_new.send_notification,
                                 state=notification_new.RoutineFSM.check_state)
     dp.register_message_handler(notification_new.command_are_you_sure,

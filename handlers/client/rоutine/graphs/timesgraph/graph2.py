@@ -4,7 +4,7 @@ async def times_graph(rise_times_in:list, down_times_in:list, goal_times_in:list
 
     # переводим значения в числовой вид
     rise_times = [await time_translate(i) for i in rise_times_in]
-    down_times = [await time_translate(i) if await time_translate(i) > 8 else await time_translate(i)+24 for i in down_times_in]
+    down_times = [await time_translate(i) if (await time_translate(i) > 8 if i is not None else True) else await time_translate(i)+24 for i in down_times_in]
     goal_times = [await time_translate(i) for i in goal_times_in]
 
     #создаем график
@@ -33,6 +33,8 @@ async def times_graph(rise_times_in:list, down_times_in:list, goal_times_in:list
     return figure, ax
 
 async def time_translate(time):
+    if time is None:
+        return None
     hours, minuts = tuple(int(i) for i in time.split(':'))
     fract = minuts/60
     result = float(hours) + fract
