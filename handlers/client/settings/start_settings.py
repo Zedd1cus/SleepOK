@@ -99,7 +99,7 @@ async def command_set_up_rise(message: types.Message):
 
 async def command_confirmation_rise(message: types.Message, state: FSMContext):
     global time_of_rise
-    if message.text == '/Yes':
+    if message.text == '/Да':
         async with state.proxy() as data:
             data['time_of_rise'] = time_of_rise
         await get_sleep_message(message)
@@ -129,7 +129,7 @@ async def command_set_up_sleep(message: types.Message):
 
 async def command_confirmation_sleep(message: types.Message, state: FSMContext):
     global time_of_sleep
-    if message.text == '/Yes':
+    if message.text == '/Да':
         async with state.proxy() as data:
             data['time_of_sleep'] = time_of_sleep
         await get_time_of_notification_message(message)
@@ -167,7 +167,7 @@ async def command_set_up_time_of_notification(message: types.Message):
 
 async def command_confirmation_time_of_notification(message: types.Message, state: FSMContext):
     global array_of_time_of_notification
-    if message.text == '/Yes':
+    if message.text == '/Да':
         #await connect.init()
 
         #user = await User.get(message.from_user.id) # само же создает юзера в бд

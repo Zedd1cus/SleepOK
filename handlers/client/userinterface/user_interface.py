@@ -2,7 +2,6 @@ from aiogram import types, Dispatcher
 
 from handlers.client.userinterface.help.help import command_help
 from handlers.client.userinterface.risedown.rise import command_rise
-from handlers.client.userinterface.risedown.down import command_down
 from handlers.client.userinterface.settings.settings import command_settings
 from src.create_bot import bot
 from keyboards.client_kb import confirmation_kb_scenario, client_ui_kb_scenario, client_settings_kb_scenario

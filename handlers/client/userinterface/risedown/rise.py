@@ -31,18 +31,17 @@ async def command_rise(message: types.Message, state: FSMContext):
         # await ClientFMS.ui_rise_state.set()
         await ClientFMS.rise_agree.set()
     else:
-        await bot.send_message(message.chat.id, "Вы не можете нажать эту кнопку до завтрашнего дня.",
+        await bot.send_message(message.chat.id, "Вы не можете использовать эту кнопку до завтрашнего дня.",
                                reply_markup=client_ui_kb_scenario)
         await ClientFMS.selection_state.set()
 
 async def rise_agree(message: types.Message, state: FSMContext):
     if message.text == '/Да':
-        await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
-        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
+        await bot.send_message(message.chat.id, "А теперь напишите время, во сколько Вы легли.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.ui_rise_state.set()
     elif message.text == '/Нет':
-        await bot.send_message(message.chat.id, "Напишите время, во сколько вы встали.")
+        await bot.send_message(message.chat.id, "Напишите время, во сколько Вы встали.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.rise_changed.set()
 
@@ -63,8 +62,7 @@ async def rise_changed(message: types.Message, state: FSMContext):
 
 async def rise_changed_agree(message: types.Message, state: FSMContext):
     if message.text == '/Да':
-        await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
-        await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
+        await bot.send_message(message.chat.id, "А теперь напишите время, во сколько Вы легли.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.ui_rise_state.set()
     elif message.text == '/Нет':

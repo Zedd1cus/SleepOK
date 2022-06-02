@@ -1,1 +1,1 @@
-from handlers.client.userinterface.risedown import rise, down
+from handlers.client.userinterface.risedown import rise
