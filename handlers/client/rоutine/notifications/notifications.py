@@ -16,8 +16,9 @@ class RoutineFSM(StatesGroup):
     check_state = State()
     push_data_base = State()
 
-async def send_notification(tid):
-    await bot.send_message(tid, "Как ваши ощущения?", reply_markup=five_states_kb_scenario)
+async def send_notification(message: types.Message):
+    await bot.send_message(message.from_user.id, "Как ваши ощущения?", reply_markup=five_states_kb_scenario)
+    await RoutineFSM.check_state.set()
 
 
 def get_sleep_time(notification_time: list[datetime.time]) -> float:
