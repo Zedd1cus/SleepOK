@@ -63,7 +63,7 @@ def routine_handlers(dp:Dispatcher):
 # Start settings handlers
 def start_settings_handlers(dp: Dispatcher):
     # Rise register handlers
-    dp.register_message_handler(start_settings.command_rise, commands=['start'])
+    dp.register_message_handler(start_settings.command_rise, commands=['haha'])
     dp.register_message_handler(start_settings.command_set_up_rise,
                                 state=ClientFMS.settings_rise)
     dp.register_message_handler(start_settings.command_confirmation_rise, commands=['Yes', 'No'],

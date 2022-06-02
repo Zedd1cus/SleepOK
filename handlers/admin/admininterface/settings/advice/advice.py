@@ -72,32 +72,43 @@ async def command_advice_interface(message: types.Message):
 
 
 async def command_mark_interface(message: types.Message, state: FSMContext):
-    save_mark = get_state_id(message.text)
-    async with state.proxy() as data:
-        data['mark'] = save_mark
-    await get_time_message(message)
-    await AdminFSM.action_interface_state.set()
+    if message.text == '/back':
+        await bot.send_message(message.chat.id, "Это интерфейс советов.",
+                               reply_markup=admin_advice_interface_kb_scenario)
+        await AdminFSM.advice_interface_state.set()
+
+    else:
+        save_mark = get_state_id(message)
+        async with state.proxy() as data:
+            data['mark'] = save_mark
+        await get_time_message(message)
+        await AdminFSM.action_interface_state.set()
 
 
 async def command_time_interface(message: types.Message, state: FSMContext):
-    save_time = None
-    for keyb in keyboards_to_time:
-        if message.text == keyb.text:
-            save_time = keyb['index']
-            break
-    async with state.proxy() as data:
-        save_mark = data['mark']
-        data['time'] = save_time
-    await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
-    advs = await Advice.get_advices_by_mark_and_hour(save_mark, save_time)
-    count = 0
-    for adv in advs:
-        if count == len(advs):
-            await bot.send_message(message.chat.id, reply_markup=admin_show_interface_kb_scenario)
-        else:
-            await bot.send_message(message.chat.id, adv.advice)
-        count += 1
-    await AdminFSM.time_interface_state.set()
+    if message.text == '/back':
+        await get_show_message(message)
+        await AdminFSM.show_interface_state.set()
+
+    else:
+        save_time = None
+        for keyb in keyboards_to_time:
+            if message.text == keyb.text:
+                save_time = keyb['hour']
+                break
+        async with state.proxy() as data:
+            save_mark = data['mark']
+            data['time'] = save_time
+        await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
+        advs = await Advice.get_advices_by_mark_and_hour(save_mark, save_time)
+        count = 0
+        for adv in advs:
+            if count == len(advs):
+                await bot.send_message(message.chat.id, reply_markup=admin_show_interface_kb_scenario)
+            else:
+                await bot.send_message(message.chat.id, adv.advice)
+            count += 1
+        await AdminFSM.time_interface_state.set()
 
 
 async def perform_action(message: types.Message):
