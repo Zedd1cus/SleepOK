@@ -7,7 +7,6 @@ async def states_graph(mean_values:list = None):
     ax.plot(position, mean_values, marker='o', markersize=15, linewidth=5)
 
     # именуем
-    ax.set_title('График состояний за неделю')
 
     # устанавливаем позиции "тиков" на OY и именуем, ограничиваем ось OY
     ax.set_yticks([0, 1, 2, 3, 4, 5])
