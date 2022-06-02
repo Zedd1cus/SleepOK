@@ -14,11 +14,11 @@ from keyboards.admin_kb import kb_5_11_advices, kb_11_15_advices, kb_20_5_advice
 from database.advice import Advice
 
 
-dict_of_marks = {'/Плохо': '"Плохо"',
-                 '/Ниже_среднего': '"Ниже среднего"',
-                 '/Средне': '"Средне"',
-                 '/Выше_среднего': '"Выше среднего"',
-                 '/Отлично': '"Отлично"'}
+dict_of_marks = {1: '"Плохо"',
+                 2: '"Ниже среднего"',
+                 3: '"Средне"',
+                 4: '"Выше среднего"',
+                 5: '"Отлично"'}
 
 keyboards_to_time = [kb_5_11_advices, kb_11_15_advices, kb_20_5_advices, kb_15_20_advices]
 
@@ -82,7 +82,8 @@ async def command_mark_interface(message: types.Message, state: FSMContext):
         save_mark = get_state_id(message)
         async with state.proxy() as data:
             data['mark'] = save_mark
-        await get_time_message(message, dict_of_marks[message.text])
+
+        await get_time_message(message, dict_of_marks[save_mark])
         await AdminFSM.action_interface_state.set()
 
 
@@ -112,7 +113,7 @@ async def command_time_interface(message: types.Message, state: FSMContext):
         await AdminFSM.time_interface_state.set()
 
 
-async def perform_action(message: types.Message):
+async def perform_action(message: types.Message, state: FSMContext):
     if message.text == '/delete':
         await get_delete_message(message)
         await AdminFSM.delete_interface_state.set()
@@ -122,9 +123,9 @@ async def perform_action(message: types.Message):
         await AdminFSM.create_interface_state.set()
 
     elif message.text == '/back':
-        await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе советов.",
-                               reply_markup=admin_advice_interface_kb_scenario)
-        await AdminFSM.advice_interface_state.set()
+        async with state.proxy() as data:
+            await get_time_message(message, dict_of_marks[data['mark']])
+            await AdminFSM.action_interface_state.set()
 
 
 async def confirmation_for_delete(message: types.Message, state: FSMContext):
@@ -144,7 +145,8 @@ async def delete(message: types.Message, state: FSMContext):
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
     elif message.text == '/No':
-        await confirmation_for_delete(message, state)
+        await get_delete_message(message)
+        await AdminFSM.delete_interface_state.set()
 
 
 async def confirmation_for_create(message: types.Message, state: FSMContext):
@@ -165,7 +167,8 @@ async def create(message: types.Message, state: FSMContext):
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
     elif message.text == '/No':
-        await confirmation_for_create(message, state)
+        await get_create_message(message)
+        await AdminFSM.create_interface_state.set()
 
 
 time_arrays = [[i for i in range(5, 11)], [i for i in range(11, 15)], [i for i in range(15, 20)], [i for i in range(20, 5)]]
