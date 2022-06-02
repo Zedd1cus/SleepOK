@@ -1,7 +1,9 @@
 from typing import List
 
+
 from database.connect import get_poll
 import datetime
+from database import connect
 
 
 class Advice:
@@ -50,6 +52,7 @@ class Advice:
     @staticmethod
     async def get_advices_by_mark_and_hour(mark: int, hour: int = datetime.datetime.now().hour) -> List['Advice']:
         sql = 'select UID, Marks, Hours, Advice from advices where $1 = ANY (Marks) and $2 = ANY (Hours) order by UID desc'
+        await connect.init()
         advices = await get_poll().fetch(sql, mark, hour)
         result = []
         for advice in advices:
