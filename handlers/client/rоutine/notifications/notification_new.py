@@ -13,13 +13,7 @@ from handlers.client.userinterface import user_interface
 from database.state_change import StateChange
 from database.advice import Advice
 
-state_buttons = []
-state_buttons.append(kb_st_bad)
-state_buttons.append(kb_st_below_average)
-state_buttons.append(kb_st_average)
-state_buttons.append(kb_st_above_average)
-state_buttons.append(kb_st_excellent)
-
+state_buttons = [kb_st_bad, kb_st_below_average, kb_st_average, kb_st_above_average, kb_st_excellent]
 
 class RoutineFSM(StatesGroup):
     check_state = State()
