@@ -19,7 +19,7 @@ async def send_graphs(message: types.Message): # эту ф-цию вызыват
                                                 # и не
     tid = message.from_user.id
     if datetime.datetime.today().weekday() == 0:
-        await bot.send_message(tid, 'Новая порция графов!')
+        await bot.send_message(tid, 'Графики состояний за неделю:')
         user = await User.get(tid)
         sr_states_7days = await user.get_last_7_marks()
         st_changes = await user.get_last_7_state_changes()
