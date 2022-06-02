@@ -184,7 +184,8 @@ async def create(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             save_message = data['message']
             mark = data['mark']
-        await create_advice_by_mark(mark, save_message)
+            hour_to_add = data['time']
+        await create_advice_by_mark(mark, save_message, hour_to_add)
         await bot.send_message(message.chat.id, f'Вы добавили данный совет в {dict_of_marks[data["mark"]]} '
                                                 f'и "{save_time_for_message}".')
         await get_show_message(message)
@@ -197,8 +198,7 @@ async def create(message: types.Message, state: FSMContext):
 time_arrays = [[i for i in range(5, 11)], [i for i in range(11, 15)], [i for i in range(15, 20)], [i for i in range(20, 5)]]
 
 
-async def create_advice_by_mark(mark: int, some_advice: str):
-    hour = datetime.datetime.now().hour
+async def create_advice_by_mark(mark: int, some_advice: str, hour):
     for arr in time_arrays:
         if hour in arr:
             await Advice.create([mark], arr, some_advice)
