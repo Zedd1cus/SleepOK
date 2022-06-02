@@ -60,12 +60,13 @@ async def push_to_database(tid, state: FSMContext):
     await user.add_mark(mark)
     print(f'Пользователь {user.tid} отправил состояние {mark} на бд')
     # получение советов по состоянию 3
-    advices = await Advice.get_advices_by_mark_and_hour(3)
+    advices = await Advice.get_advices_by_mark_and_hour(mark)
     # # получение рандомного совета
     advice = random.choice(advices)
     await bot.send_message(tid, advice.advice)
-    asyncio.create_task(user_interface.command_base_ui(tid))
     asyncio.create_task(handle_player(tid))
+    await user_interface.command_base_ui(tid)
+
 
 
 def get_state_id(message: types.Message) -> int:
