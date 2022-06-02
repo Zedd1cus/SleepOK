@@ -19,6 +19,7 @@ dict_of_marks = {1: '"Плохо"',
                  3: '"Средне"',
                  4: '"Выше среднего"',
                  5: '"Отлично"'}
+save_time_for_message = None
 
 keyboards_to_time = [kb_5_11_advices, kb_11_15_advices, kb_20_5_advices, kb_15_20_advices]
 
@@ -94,7 +95,9 @@ async def command_time_interface(message: types.Message, state: FSMContext):
 
 
     else:
+        global save_time_for_message
         save_time = None
+        save_time_for_message = message.text[1:]
         for keyb in keyboards_to_time:
             if message.text == keyb.text:
                 save_time = keyb['hour']
@@ -111,7 +114,8 @@ async def command_time_interface(message: types.Message, state: FSMContext):
                 await bot.send_message(message.chat.id, f'{adv.uid} {adv.advice}',
                                        reply_markup=admin_show_interface_kb_scenario)
             else:
-                await bot.send_message(message.chat.id, f'{adv.uid} {adv.advice}')
+                await bot.send_message(message.chat.id, f'{adv.uid} {adv.advice}',
+                                       reply_markup=admin_show_interface_kb_scenario)
             ids.append(adv.uid)
             count += 1
         async with state.proxy() as data:
@@ -157,7 +161,8 @@ async def delete(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             save_id = data['id']
         await Advice.delete_by_uid(save_id)
-        await bot.send_message(message.chat.id, f'Вы удалили совет под номером {save_id}.')
+        await bot.send_message(message.chat.id, f'Вы удалили совет под номером {save_id}.'
+                                                f'в {dict_of_marks[data["mark"]]} и "{save_time_for_message}".')
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
     elif message.text == '/Нет':
@@ -180,8 +185,8 @@ async def create(message: types.Message, state: FSMContext):
             save_message = data['message']
             mark = data['mark']
         await create_advice_by_mark(mark, save_message)
-        await bot.send_message(message.chat.id, 'Вы добавили данный совет:')
-        await bot.send_message(message.chat.id, f'{save_message}')
+        await bot.send_message(message.chat.id, f'Вы добавили данный совет в {dict_of_marks[data["mark"]]} '
+                                                f'и "{save_time_for_message}".')
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
     elif message.text == '/Нет':
