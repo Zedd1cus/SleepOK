@@ -19,19 +19,16 @@ async def command_base_ui(tid):
 
 
 async def command_user_selection(message: types.Message, state:FSMContext):
-    if message.text == '/help':
-        await command_help(message)
-
-    elif message.text == '/settings':
+    if message.text == '/Настройки':
         await command_settings(message)
 
-    elif message.text == '/rise':
+    elif message.text == '/Подъем':
         await command_rise(message, state)
 
 
 def base_ui_handlers(dp: Dispatcher):
     dp.register_message_handler(command_base_ui, state=None)
     dp.register_message_handler(command_user_selection,
-                                commands=['help', 'rise', 'settings'],
+                                commands=['Подъем', 'Настройки'],
                                 state=ClientFMS.selection_state)
 

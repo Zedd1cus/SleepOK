@@ -36,12 +36,12 @@ async def command_rise(message: types.Message, state: FSMContext):
         await ClientFMS.selection_state.set()
 
 async def rise_agree(message: types.Message, state: FSMContext):
-    if message.text == '/Yes':
+    if message.text == '/Да':
         await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
         await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.ui_rise_state.set()
-    else:
+    elif message.text == '/Нет':
         await bot.send_message(message.chat.id, "Напишите время, во сколько вы встали.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.rise_changed.set()
@@ -62,12 +62,12 @@ async def rise_changed(message: types.Message, state: FSMContext):
         await command_rise(message, state)
 
 async def rise_changed_agree(message: types.Message, state: FSMContext):
-    if message.text == '/Yes':
+    if message.text == '/Да':
         await bot.send_message(message.chat.id, "Ок, вы встали, а теперь, пожалуйста...")
         await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.ui_rise_state.set()
-    else:
+    elif message.text == '/Нет':
         await rise_agree(message, state)
 
 
@@ -90,13 +90,13 @@ async def command_down(message: types.Message, state: FSMContext):
 
 async def command_confirmation(message: types.Message, state: FSMContext):
     user = await User.get(message.from_user.id)
-    if message.text == '/Yes':
+    if message.text == '/Да':
         async with state.proxy() as data:
             await user.add_state_change(StateChange.FALL_ASLEEP, data['down'])
             await user.add_state_change(StateChange.WAKE_UP, data['rise'])
             await graphs.send_graphs(message)
 
-    elif message.text == '/No':
+    elif message.text == '/Нет':
         await bot.send_message(message.chat.id, "Напишите время, во сколько вы легли.")
         await bot.send_message(message.chat.id, 'Формат: "часы:минуты"')
         await ClientFMS.ui_rise_state.set()

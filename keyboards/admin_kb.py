@@ -2,9 +2,9 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from keyboards.client_kb import kb_settings, kb_advice, kb_back
 
 
-kb_create_advice = KeyboardButton('/create')
-kb_delete_advice = KeyboardButton('/delete')
-kb_show_advices = KeyboardButton('/show')
+kb_create_advice = KeyboardButton('/Создать')
+kb_delete_advice = KeyboardButton('/Удалить')
+kb_show_advices = KeyboardButton('/Показать')
 kb_5_11_advices = KeyboardButton('/5:00-11:00', hour=7)
 kb_11_15_advices = KeyboardButton('/11:00-15:00', hour=12)
 kb_15_20_advices = KeyboardButton('/15:00-20:00', hour=16)

@@ -27,28 +27,28 @@ from handlers.client.userinterface.user_interface import command_base_ui, comman
 def base_ui_handlers(dp: Dispatcher):
     dp.register_message_handler(command_base_ui, state=None)
     dp.register_message_handler(command_user_selection,
-                                commands=['help', 'rise', 'settings'],
+                                commands=['Подъем', 'Настройки'],
                                 state=ClientFMS.selection_state)
 
 
 # User interface handlers
 def user_interface_handlers(dp: Dispatcher):
     # UI Settings
-    dp.register_message_handler(settings.command_settings, commands=['settings'],
+    dp.register_message_handler(settings.command_settings, commands=['Настройки'],
                                 state=None)
-    dp.register_message_handler(settings.command_reset, commands=['reset', 'back'],
+    dp.register_message_handler(settings.command_reset, commands=['Сброс', 'Назад'],
                                 state=ClientFMS.ui_settings_state)
 
-    dp.register_message_handler(settings.command_confirmation_reset, commands=['Yes', 'No'],
+    dp.register_message_handler(settings.command_confirmation_reset, commands=['Да', 'Нет'],
                                 state=ClientFMS.ui_reset_state)
 
     # Rise and down
     dp.register_message_handler(rise.command_down, state=ClientFMS.ui_rise_state)
-    dp.register_message_handler(rise.command_confirmation, commands=['Yes', 'No'],
+    dp.register_message_handler(rise.command_confirmation, commands=['Да', 'Нет'],
                                 state=ClientFMS.ui_down_state)
-    dp.register_message_handler(rise.rise_agree, commands=['Yes', 'No'],  state=ClientFMS.rise_agree)
+    dp.register_message_handler(rise.rise_agree, commands=['Да', 'Нет'],  state=ClientFMS.rise_agree)
     dp.register_message_handler(rise.rise_changed, state=ClientFMS.rise_changed)
-    dp.register_message_handler(rise.rise_changed_agree, commands=['Yes', 'No'], state=ClientFMS.rise_changed_agree)
+    dp.register_message_handler(rise.rise_changed_agree, commands=['Да', 'Нет'], state=ClientFMS.rise_changed_agree)
 
 # Routine handlers
 def routine_handlers(dp:Dispatcher):
@@ -69,19 +69,19 @@ def start_settings_handlers(dp: Dispatcher):
     dp.register_message_handler(start_settings.command_rise, commands=['haha'])
     dp.register_message_handler(start_settings.command_set_up_rise,
                                 state=ClientFMS.settings_rise)
-    dp.register_message_handler(start_settings.command_confirmation_rise, commands=['Yes', 'No'],
+    dp.register_message_handler(start_settings.command_confirmation_rise, commands=['Да', 'Нет'],
                                 state=ClientFMS.settings_set_up_rise)
 
     # Sleep register handlers
     dp.register_message_handler(start_settings.command_set_up_sleep,
                                 state=ClientFMS.settings_confirmation_rise)
-    dp.register_message_handler(start_settings.command_confirmation_sleep, commands=['Yes', 'No'],
+    dp.register_message_handler(start_settings.command_confirmation_sleep, commands=['Да', 'Нет'],
                                 state=ClientFMS.settings_set_up_sleep)
 
     # Time of notification register handlers
     dp.register_message_handler(start_settings.command_set_up_time_of_notification,
                                 state=ClientFMS.settings_confirmation_sleep)
-    dp.register_message_handler(start_settings.command_confirmation_time_of_notification, commands=['Yes', 'No'],
+    dp.register_message_handler(start_settings.command_confirmation_time_of_notification, commands=['Да', 'Нет'],
                                 state=ClientFMS.settings_set_up_time_of_notification)
 
 

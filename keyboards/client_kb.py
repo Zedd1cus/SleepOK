@@ -1,14 +1,13 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
-kb_help = KeyboardButton('/help')
-kb_rise = KeyboardButton('/rise')
-kb_settings = KeyboardButton('/settings')
-kb_back = KeyboardButton('/back')
-kb_reset = KeyboardButton('/reset')
-kb_yes = KeyboardButton('/Yes')
-kb_no = KeyboardButton('/No')
-kb_advice = KeyboardButton('/advice')
+kb_rise = KeyboardButton('/Подъем')
+kb_settings = KeyboardButton('/Настройки')
+kb_back = KeyboardButton('/Назад')
+kb_reset = KeyboardButton('/Сброс')
+kb_yes = KeyboardButton('/Да')
+kb_no = KeyboardButton('/Нет')
+kb_advice = KeyboardButton('/Советы')
 kb_st_bad = KeyboardButton('/Плохо', index=1)
 kb_st_below_average = KeyboardButton('/Ниже_среднего', index=2)
 kb_st_average = KeyboardButton('/Средне', index=3)
@@ -26,7 +25,7 @@ confirmation_kb_scenario.row(kb_yes, kb_no)
 # verify_kb_scenario.row(kb_verify_client, kb_verify_admin)
 
 client_ui_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-client_ui_kb_scenario.add(kb_rise).row(kb_help, kb_settings)
+client_ui_kb_scenario.add(kb_rise, kb_settings)
 
 client_settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 client_settings_kb_scenario.row(kb_reset, kb_back)
