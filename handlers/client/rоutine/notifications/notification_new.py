@@ -23,18 +23,18 @@ async def send_notification(tid):
     await bot.send_message(tid, "Как ваши ощущения?", reply_markup=five_states_kb_scenario)
 
 
-def get_sleep_time(notification_time: list[datetime.time]) -> float:
-    at_the_moment = datetime.datetime.now()
-    first_dif = None
+def get_sleep_time(notification_time) -> int:
+    n = datetime.datetime.now()
+
+    min_timedelta = None
     for time in notification_time:
-        first = (time.hour * 60 + time.minute) * 60
-        second = (at_the_moment.hour * 60 + at_the_moment.minute) * 60
-        dif = first - second
-        if first_dif is None:
-            first_dif = dif
-        if dif > 0:
-            return dif
-    return abs(first_dif)
+        notificate = n.replace(n.year, n.month, n.day, time.hour, time.minute, 0, 0)
+        if notificate < n:
+            notificate += datetime.timedelta(days=1)
+
+        if min_timedelta is None or notificate - n < min_timedelta:
+            min_timedelta = notificate - n
+    return min_timedelta.seconds
 
 
 async def command_are_you_sure(message: types.Message, state:FSMContext): # check_state
@@ -77,6 +77,7 @@ def get_state_id(message: types.Message) -> int:
 async def handle_player(tid: int): # для польз вне бд asyncio.create_task(handle_player(user.tid))
     while True:
         player = await User.get(tid)
+        print('handle_player', get_sleep_time(player.notification_time))
         await asyncio.sleep(get_sleep_time(player.notification_time))
         player_updated = await User.get(tid)
         if player.notification_time != player_updated.notification_time:
