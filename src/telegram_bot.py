@@ -18,11 +18,11 @@ async def started(_):
 
 
 admin.settings_handlers(dp)
-
+client.routine_handlers(dp)
 client.user_interface_handlers(dp)
 client.start_settings_handlers(dp)
 client.new_routine_handlers(dp)
-client.routine_handlers(dp)
+
 client.base_ui_handlers(dp)
 
 

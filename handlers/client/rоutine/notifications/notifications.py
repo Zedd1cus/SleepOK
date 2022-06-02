@@ -43,8 +43,8 @@ async def command_are_you_sure(message: types.Message, state:FSMContext): # chec
 
 
 async def delimiter_yes_no(message: types.Message, state: FSMContext): # push_data_base
-    if message.text == '/Yes':
-        await push_to_database(message.from_user.id, state)
+    if message.text == '/Да':
+        await push_to_database(message.chat.id, state)
     else:
         await RoutineFSM.check_state.set()
         await send_notification(message.from_user.id)
