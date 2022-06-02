@@ -19,10 +19,6 @@ class RoutineFSM(StatesGroup):
     check_state = State()
     push_data_base = State()
 
-class Checker_time:
-
-    def __init__(self):
-        self.flag = True
 
 async def send_notification(tid):
     await bot.send_message(tid, "Как ваши ощущения?", reply_markup=five_states_kb_scenario)
@@ -83,7 +79,7 @@ async def handle_player(tid: int): # для польз вне бд asyncio.creat
     chkr = Checker_time()
     while True:
         player = await User.get(tid)
-        await asyncio.sleep(get_sleep_time(player.notification_time, chkr))
+        await asyncio.sleep(get_sleep_time(player.notification_time))
         player_updated = await User.get(tid)
         if player.notification_time != player_updated.notification_time:
             continue
