@@ -47,7 +47,7 @@ async def send_graphs(message: types.Message): # эту ф-цию вызыват
 
 async def send_graphs_test(message: types.Message):
     tid = message.from_user.id
-    await bot.send_message(tid, 'Новая порция графов!')
+    await bot.send_message(tid, 'Графики состояний за неделю:')
     rises = ['7:00', '7:30', '8:00', '9:00', '4:30', '6:45', '7:00']
     downs = ['22:30', '21:00', '22:00', '22:00', '21:30', '21:45', '23:00']
     tms = [rises, downs, ['7:00', '21:00']]
