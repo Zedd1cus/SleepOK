@@ -49,7 +49,7 @@ async def send_graphs_test(message: types.Message):
     tid = message.from_user.id
     await bot.send_message(tid, 'Новая порция графов!')
     rises = ['7:00', '7:30', '8:00', '9:00', '4:30', '6:45', '7:00']
-    downs = ['22:30', '21:00', None, '22:00', '21:30', '21:45', '23:00']
+    downs = ['22:30', '21:00', '22:00', '22:00', '21:30', '21:45', '23:00']
     tms = [rises, downs, ['7:00', '21:00']]
     await save_graphs([4, 3, 5, 2, 3, 4, 5], tms)
     file1 = open('temp_graph.png', 'rb')
@@ -59,7 +59,6 @@ async def send_graphs_test(message: types.Message):
     file1.close()
     file2.close()
     await del_graph_local()
-    await user_interface.command_base_ui(message.chat.id)
 
 async def del_graph_local():
     if 'temp_graph.png' in os.listdir():

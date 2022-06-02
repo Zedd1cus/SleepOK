@@ -19,7 +19,6 @@ dict_of_marks = {1: '"Плохо"',
                  3: '"Средне"',
                  4: '"Выше среднего"',
                  5: '"Отлично"'}
-save_time_for_message = None
 
 keyboards_to_time = [kb_5_11_advices, kb_11_15_advices, kb_20_5_advices, kb_15_20_advices]
 
@@ -52,29 +51,29 @@ async def get_method_message(message: types.Message, question: dict):
 
 
 async def command_advice(message: types.Message):
-    if message.text == '/Советы':
+    if message.text == '/advice':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе советов.",
                                reply_markup=admin_advice_interface_kb_scenario)
         await AdminFSM.advice_interface_state.set()
 
-    elif message.text == '/Назад':
+    elif message.text == '/back':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе Админа.", reply_markup=admin_ui_kb_scenario)
         await AdminFSM.settings_state.set()
 
 
 async def command_advice_interface(message: types.Message):
-    if message.text == '/Показать':
+    if message.text == '/show':
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
 
-    elif message.text == '/Назад':
+    elif message.text == '/back':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе настроек.",
                                reply_markup=admin_settings_kb_scenario)
         await AdminFSM.advice_state.set()
 
 
 async def command_mark_interface(message: types.Message, state: FSMContext):
-    if message.text == '/Назад':
+    if message.text == '/back':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе советов.",
                                reply_markup=admin_advice_interface_kb_scenario)
         await AdminFSM.advice_interface_state.set()
@@ -89,14 +88,12 @@ async def command_mark_interface(message: types.Message, state: FSMContext):
 
 
 async def command_time_interface(message: types.Message, state: FSMContext):
-    if message.text == '/Назад':
+    if message.text == '/back':
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
 
     else:
-        global save_time_for_message
         save_time = None
-        save_time_for_message = message.text[1:]
         for keyb in keyboards_to_time:
             if message.text == keyb.text:
                 save_time = keyb['hour']
@@ -117,15 +114,15 @@ async def command_time_interface(message: types.Message, state: FSMContext):
 
 
 async def perform_action(message: types.Message, state: FSMContext):
-    if message.text == '/Удалить':
+    if message.text == '/delete':
         await get_delete_message(message)
         await AdminFSM.delete_interface_state.set()
 
-    elif message.text == '/Создать':
+    elif message.text == '/create':
         await get_create_message(message)
         await AdminFSM.create_interface_state.set()
 
-    elif message.text == '/Назад':
+    elif message.text == '/back':
         async with state.proxy() as data:
             await get_time_message(message, dict_of_marks[data['mark']])
             await AdminFSM.action_interface_state.set()
@@ -141,14 +138,13 @@ async def confirmation_for_delete(message: types.Message, state: FSMContext):
 
 async def delete(message: types.Message, state: FSMContext):
     """delete advice by id and mark"""
-    if message.text == '/Да':
+    if message.text == '/Yes':
         async with state.proxy() as data:
             save_id = data['id']
-            await bot.send_message(message.chat.id, f'Вы удалили совет под номером "{save_id}"\n'
-                                                    f'в {dict_of_marks[data["mark"]]} и "{save_time_for_message}".')
-            await get_show_message(message)
-            await AdminFSM.show_interface_state.set()
-    elif message.text == '/Нет':
+        await bot.send_message(message.chat.id, f'Вы удалили совет под номером {save_id}.')
+        await get_show_message(message)
+        await AdminFSM.show_interface_state.set()
+    elif message.text == '/No':
         await get_delete_message(message)
         await AdminFSM.delete_interface_state.set()
 
@@ -163,14 +159,14 @@ async def confirmation_for_create(message: types.Message, state: FSMContext):
 
 async def create(message: types.Message, state: FSMContext):
     """create advice by mark"""
-    if message.text == '/Да':
+    if message.text == '/Yes':
         async with state.proxy() as data:
             save_message = data['message']
-            await bot.send_message(message.chat.id, f'Вы добавили данный совет в {dict_of_marks[data["mark"]]} и '
-                                                    f'"{save_time_for_message}".')
-            await get_show_message(message)
-            await AdminFSM.show_interface_state.set()
-    elif message.text == '/Нет':
+        await bot.send_message(message.chat.id, 'Вы добавили данный совет:')
+        await bot.send_message(message.chat.id, f'{save_message}')
+        await get_show_message(message)
+        await AdminFSM.show_interface_state.set()
+    elif message.text == '/No':
         await get_create_message(message)
         await AdminFSM.create_interface_state.set()
 
