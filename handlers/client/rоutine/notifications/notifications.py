@@ -1,4 +1,3 @@
-import asyncio
 import datetime
 import random
 from aiogram.dispatcher.filters.state import StatesGroup, State
@@ -6,7 +5,6 @@ from src.create_bot import bot
 from aiogram import types
 from keyboards.client_kb import five_states_kb_scenario, confirmation_kb_scenario, kb_st_bad, kb_st_below_average, \
         kb_st_average, kb_st_above_average, kb_st_excellent
-from database import connect
 from aiogram.dispatcher import FSMContext
 from database.advice import Advice
 

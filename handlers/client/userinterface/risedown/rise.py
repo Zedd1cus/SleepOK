@@ -9,13 +9,12 @@ from keyboards.client_kb import client_ui_kb_scenario, confirmation_kb_scenario
 from src.create_bot import bot
 from handlers.client.clientscenario.client_states_scenario import ClientFMS
 from handlers.client.settings.start_settings import verify_time_of_notification
-from database import connect
+
 
 save_time_of_down = None
 
 
 async def command_rise(message: types.Message, state: FSMContext):
-    await connect.init() # это убрать!!!
     tid = message.from_user.id
     user = await User.get(tid)
     last = await user.get_last_state()

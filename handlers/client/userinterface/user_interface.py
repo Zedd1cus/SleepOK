@@ -7,8 +7,6 @@ from src.create_bot import bot
 from keyboards.client_kb import confirmation_kb_scenario, client_ui_kb_scenario, client_settings_kb_scenario
 from handlers.client.clientscenario.client_states_scenario import ClientFMS
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from handlers.client.settings import start_settings
 
 
 async def command_base_ui(tid):

@@ -2,19 +2,14 @@ import re
 import datetime
 import asyncio
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types
 
-
+from handlers.client.rоutine.notifications.notification_new import handle_player
 from handlers.client.userinterface import user_interface
 from src.create_bot import bot
 from handlers.client.clientscenario.client_states_scenario import ClientFMS
-from keyboards.client_kb import confirmation_kb_scenario, client_ui_kb_scenario
-from aiogram import Dispatcher
-from database import connect
-from database.user import User
-from database.state_change import StateChange
-from database.advice import Advice
+from keyboards.client_kb import confirmation_kb_scenario
+
 from database.user import User
 
 time_of_rise = None
@@ -72,10 +67,7 @@ async def get_verify_time_of_notification_message(message: types.Message, row_of
 
 
 async def command_rise(message: types.Message):
-    # Сюда добавить проверку на id админа, если да, то часть админа,
-    # если нет, то часть клиента
-    # is_user_in = await User.is_registered(message.from_user.id)
-    if True:
+    if message.from_user.id != 653694622:
         await get_rise_message(message)
         await get_format_time_message(message)
         await ClientFMS.settings_rise.set()
@@ -169,16 +161,14 @@ async def command_confirmation_time_of_notification(message: types.Message, stat
     global array_of_time_of_notification
     if message.text == '/Да':
         #await connect.init()
+        user = await User.get(message.from_user.id) # само же создает юзера в бд
 
-        #user = await User.get(message.from_user.id) # само же создает юзера в бд
-
-        # async with state.proxy() as data:
-        #     data['array_of_time_of_notification'] = array_of_time_of_notification
-        #     await user.set_time_to_up(datetime.time.fromisoformat(data['time_of_rise']))
-        #     await user.set_time_to_sleep(datetime.time.fromisoformat(data['time_of_sleep']))
-        #     await user.set_notification_time([datetime.time.fromisoformat(k) for k in data['array_of_time_of_notification']])
-        #
-        # asyncio.create_task(handle_player(user.tid))
+        async with state.proxy() as data:
+            data['array_of_time_of_notification'] = array_of_time_of_notification
+            await user.set_time_to_up(datetime.time.fromisoformat(data['time_of_rise']))
+            await user.set_time_to_sleep(datetime.time.fromisoformat(data['time_of_sleep']))
+            await user.set_notification_time([datetime.time.fromisoformat(k) for k in data['array_of_time_of_notification']])
+        asyncio.create_task(handle_player(user.tid))
         await user_interface.command_base_ui(message.chat.id)
     else:
         await get_time_of_notification_message(message)

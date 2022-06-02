@@ -90,7 +90,7 @@ async def handle_all_players(): # должна запускаться с сам�
     for user in await User.get_all_users():
         if user.tid != 653694622:
             asyncio.create_task(handle_player(user.tid))
-            await user_interface.command_base_ui(user.tid) # это если юзер уже настроен, если нет, то он и не попадает в handle
+            await user_interface.command_base_ui(user.tid)
         else:
             await bot.send_message(653694622, 'Напиши /admin')
 
