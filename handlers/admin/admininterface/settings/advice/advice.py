@@ -51,29 +51,29 @@ async def get_method_message(message: types.Message, question: dict):
 
 
 async def command_advice(message: types.Message):
-    if message.text == '/advice':
+    if message.text == '/Советы':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе советов.",
                                reply_markup=admin_advice_interface_kb_scenario)
         await AdminFSM.advice_interface_state.set()
 
-    elif message.text == '/back':
+    elif message.text == '/Назад':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе Админа.", reply_markup=admin_ui_kb_scenario)
         await AdminFSM.settings_state.set()
 
 
 async def command_advice_interface(message: types.Message):
-    if message.text == '/show':
+    if message.text == '/Показать':
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
 
-    elif message.text == '/back':
+    elif message.text == '/Назад':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе настроек.",
                                reply_markup=admin_settings_kb_scenario)
         await AdminFSM.advice_state.set()
 
 
 async def command_mark_interface(message: types.Message, state: FSMContext):
-    if message.text == '/back':
+    if message.text == '/Назад':
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе советов.",
                                reply_markup=admin_advice_interface_kb_scenario)
         await AdminFSM.advice_interface_state.set()
@@ -92,6 +92,7 @@ async def command_time_interface(message: types.Message, state: FSMContext):
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
 
+
     else:
         save_time = None
         for keyb in keyboards_to_time:
@@ -104,47 +105,62 @@ async def command_time_interface(message: types.Message, state: FSMContext):
         await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
         advs = await Advice.get_advices_by_mark_and_hour(save_mark, save_time)
         count = 0
+        ids = []
         for adv in advs:
-            if count == len(advs):
-                await bot.send_message(message.chat.id, reply_markup=admin_show_interface_kb_scenario)
+            if count == len(advs)-1:
+                await bot.send_message(message.chat.id, f'{adv.uid} {adv.advice}',
+                                       reply_markup=admin_show_interface_kb_scenario)
             else:
-                await bot.send_message(message.chat.id, adv.advice, reply_markup=admin_show_interface_kb_scenario)
+                await bot.send_message(message.chat.id, f'{adv.uid} {adv.advice}')
+            ids.append(adv.uid)
             count += 1
+        async with state.proxy() as data:
+            data['ids'] = ids
         await AdminFSM.time_interface_state.set()
 
 
 async def perform_action(message: types.Message, state: FSMContext):
-    if message.text == '/delete':
+    if message.text == '/Удалить':
         await get_delete_message(message)
         await AdminFSM.delete_interface_state.set()
 
-    elif message.text == '/create':
+    elif message.text == '/Создать':
         await get_create_message(message)
         await AdminFSM.create_interface_state.set()
 
-    elif message.text == '/back':
+    elif message.text == '/Назад':
         async with state.proxy() as data:
             await get_time_message(message, dict_of_marks[data['mark']])
             await AdminFSM.action_interface_state.set()
 
 
 async def confirmation_for_delete(message: types.Message, state: FSMContext):
-    save_id = message.text
+    try:
+        save_id = int(message.text)
+    except:
+        save_id = -1000
     async with state.proxy() as data:
-        data['id'] = save_id
-    await get_confirmation_message(message)
-    await AdminFSM.confirmation_for_delete_state.set()
+        list_of_ids = data['ids']
+    if not save_id in list_of_ids:
+        await bot.send_message(message.from_user.id, 'Напишите индекс из списка!')
+        await AdminFSM.delete_interface_state.set()
+    else:
+        async with state.proxy() as data:
+            data['id'] = save_id
+        await get_confirmation_message(message)
+        await AdminFSM.confirmation_for_delete_state.set()
 
 
 async def delete(message: types.Message, state: FSMContext):
     """delete advice by id and mark"""
-    if message.text == '/Yes':
+    if message.text == '/Да':
         async with state.proxy() as data:
             save_id = data['id']
+        await Advice.delete_by_uid(save_id)
         await bot.send_message(message.chat.id, f'Вы удалили совет под номером {save_id}.')
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
-    elif message.text == '/No':
+    elif message.text == '/Нет':
         await get_delete_message(message)
         await AdminFSM.delete_interface_state.set()
 
@@ -159,14 +175,16 @@ async def confirmation_for_create(message: types.Message, state: FSMContext):
 
 async def create(message: types.Message, state: FSMContext):
     """create advice by mark"""
-    if message.text == '/Yes':
+    if message.text == '/Да':
         async with state.proxy() as data:
             save_message = data['message']
+            mark = data['mark']
+        await create_advice_by_mark(mark, save_message)
         await bot.send_message(message.chat.id, 'Вы добавили данный совет:')
         await bot.send_message(message.chat.id, f'{save_message}')
         await get_show_message(message)
         await AdminFSM.show_interface_state.set()
-    elif message.text == '/No':
+    elif message.text == '/Нет':
         await get_create_message(message)
         await AdminFSM.create_interface_state.set()
 
@@ -174,15 +192,9 @@ async def create(message: types.Message, state: FSMContext):
 time_arrays = [[i for i in range(5, 11)], [i for i in range(11, 15)], [i for i in range(15, 20)], [i for i in range(20, 5)]]
 
 
-def create_advice_by_mark(mark: int, some_advice: str):
+async def create_advice_by_mark(mark: int, some_advice: str):
     hour = datetime.datetime.now().hour
     for arr in time_arrays:
         if hour in arr:
-            Advice.create([mark], arr, some_advice)
+            await Advice.create([mark], arr, some_advice)
             break
-
-def delete_advice_by_mark_and_hour(mark: int, id_advice: int):
-    Advice.delete_by_uid()
-
-def get_advice_by_mark_and_id(mark: int, id_advice: int):
-    Advice.get_advices_by_mark_and_hour()
