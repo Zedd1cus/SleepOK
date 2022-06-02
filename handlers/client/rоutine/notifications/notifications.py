@@ -14,7 +14,7 @@ state_buttons = [kb_st_bad, kb_st_below_average, kb_st_average, kb_st_above_aver
 
 class RoutineFSM(StatesGroup):
     check_state = State()
-    push_data_base = State()
+    # push_data_base = State()
 
 async def send_notification(message: types.Message):
     await bot.send_message(message.from_user.id, "Как ваши ощущения?", reply_markup=five_states_kb_scenario)
@@ -39,7 +39,8 @@ async def command_are_you_sure(message: types.Message, state:FSMContext): # chec
     async with state.proxy() as data:
         data['user_state'] = message.text
     await bot.send_message(message.chat.id, "Вы уверены?", reply_markup=confirmation_kb_scenario)
-    await RoutineFSM.push_data_base.set()
+    # await RoutineFSM.push_data_base.set()
+    await push_to_database(message.from_user.id, state)
 
 
 async def delimiter_yes_no(message: types.Message, state: FSMContext): # push_data_base
