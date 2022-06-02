@@ -22,7 +22,7 @@ class AdminFSM(StatesGroup):
 
 
 async def command_admin(message: types.Message):
-    if True: # if message.from_user.id == admin_user:
+    if message.from_user.id == 653694622: # if message.from_user.id == admin_user:
         await bot.send_message(message.chat.id, "Вы находитесь в интерфейсе админа.", reply_markup=admin_ui_kb_scenario)
         await AdminFSM.settings_state.set()
 
