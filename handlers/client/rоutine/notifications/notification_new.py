@@ -69,7 +69,7 @@ async def push_to_database(tid, state: FSMContext):
     advices = await Advice.get_advices_by_mark_and_hour(3)
     # # получение рандомного совета
     advice = random.choice(advices)
-    await bot.send_message(tid, )
+    await bot.send_message(tid, advice.advice)
     await state.finish()
     await handle_player(tid)
 
