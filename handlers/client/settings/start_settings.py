@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types
 
-from handlers.client.rоutine.notifications.notification_new import handle_player
+
 from handlers.client.userinterface import user_interface
 from src.create_bot import bot
 from handlers.client.clientscenario.client_states_scenario import ClientFMS
