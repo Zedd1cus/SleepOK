@@ -12,7 +12,7 @@ kb_20_5_advices = KeyboardButton('/20:00-5:00', hour=21)
 
 
 admin_show_interface_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-admin_show_interface_kb_scenario.row(kb_delete_advice, kb_create_advice).add(kb_back)
+admin_show_interface_kb_scenario.row(kb_create_advice, kb_delete_advice).add(kb_back)
 
 admin_ui_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 admin_ui_kb_scenario.row(kb_settings)

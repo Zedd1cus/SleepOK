@@ -32,8 +32,8 @@ client_settings_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time
 client_settings_kb_scenario.row(kb_reset, kb_back)
 
 five_states_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-five_states_kb_scenario.row(kb_st_excellent, kb_st_bad).\
-    row(kb_st_above_average, kb_st_average, kb_st_below_average)
+five_states_kb_scenario.row(kb_st_excellent, kb_st_average, kb_st_bad).\
+    row(kb_st_above_average, kb_st_below_average, kb_back)
 
 client_reset_kb_scenario = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 client_reset_kb_scenario.row(kb_time_of_rise, kb_time_of_down).row(kb_time_of_notification, kb_back)
