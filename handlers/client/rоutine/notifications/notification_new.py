@@ -10,7 +10,6 @@ from database import connect
 from aiogram.dispatcher import FSMContext
 from database.user import User
 from handlers.client.userinterface import user_interface
-from database.state_change import StateChange
 from database.advice import Advice
 
 state_buttons = [kb_st_bad, kb_st_below_average, kb_st_average, kb_st_above_average, kb_st_excellent]
@@ -76,7 +75,6 @@ def get_state_id(message: types.Message) -> int:
 
 
 async def handle_player(tid: int): # для польз вне бд asyncio.create_task(handle_player(user.tid))
-    chkr = Checker_time()
     while True:
         player = await User.get(tid)
         await asyncio.sleep(get_sleep_time(player.notification_time))
