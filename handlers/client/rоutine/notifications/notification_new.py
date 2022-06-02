@@ -19,6 +19,11 @@ class RoutineFSM(StatesGroup):
     check_state = State()
     push_data_base = State()
 
+class Checker_time:
+
+    def __init__(self):
+        self.flag = True
+
 async def send_notification(tid):
     await bot.send_message(tid, "Как ваши ощущения?", reply_markup=five_states_kb_scenario)
 
@@ -32,7 +37,7 @@ def get_sleep_time(notification_time: list[datetime.time]) -> float:
         dif = first - second
         if first_dif is None:
             first_dif = dif
-        if dif >= 0:
+        if dif > 0:
             return dif
     return abs(first_dif)
 
@@ -75,9 +80,10 @@ def get_state_id(message: types.Message) -> int:
 
 
 async def handle_player(tid: int): # для польз вне бд asyncio.create_task(handle_player(user.tid))
+    chkr = Checker_time()
     while True:
         player = await User.get(tid)
-        await asyncio.sleep(get_sleep_time(player.notification_time))
+        await asyncio.sleep(get_sleep_time(player.notification_time, chkr))
         player_updated = await User.get(tid)
         if player.notification_time != player_updated.notification_time:
             continue
