@@ -71,6 +71,8 @@ async def command_rise(message: types.Message):
         await get_rise_message(message)
         await get_format_time_message(message)
         await ClientFMS.settings_rise.set()
+    else:
+        print('Админу нельзя')
 
 
 async def command_set_up_rise(message: types.Message):

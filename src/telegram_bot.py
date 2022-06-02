@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import executor
 from create_bot import dp
 from database import connect
@@ -16,10 +18,11 @@ async def one_startup(_) -> None:
 async def started(_):
     await handle_all_players()
 
+
+client.start_settings_handlers(dp)
 client.routine_handlers(dp)
 admin.settings_handlers(dp)
 client.user_interface_handlers(dp)
-client.start_settings_handlers(dp)
 client.new_routine_handlers(dp)
 client.base_ui_handlers(dp)
 
