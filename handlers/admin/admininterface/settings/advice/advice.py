@@ -104,12 +104,17 @@ async def command_time_interface(message: types.Message, state: FSMContext):
         await bot.send_message(message.chat.id, f'{save_mark}/{save_time}')
         advs = await Advice.get_advices_by_mark_and_hour(save_mark, save_time)
         count = 0
+        ids = []
         for adv in advs:
-            if count == len(advs):
-                await bot.send_message(message.chat.id, reply_markup=admin_show_interface_kb_scenario)
+            if count == len(advs)-1:
+                await bot.send_message(message.chat.id, f'{adv.uid} {adv.advice}',
+                                       reply_markup=admin_show_interface_kb_scenario)
             else:
-                await bot.send_message(message.chat.id, adv.advice, reply_markup=admin_show_interface_kb_scenario)
+                await bot.send_message(message.chat.id, f'{adv.uid} {adv.advice}')
+            ids.append(adv.uid)
             count += 1
+        async with state.proxy() as data:
+            data['ids'] = ids
         await AdminFSM.time_interface_state.set()
 
 
