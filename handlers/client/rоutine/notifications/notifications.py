@@ -56,15 +56,15 @@ async def push_to_database(tid, state: FSMContext):
     mark = get_state_id(stated)
     print(f'Пользователь user отправил состояние {mark} на бд')
     # получение советов по состоянию 3
-    advices = await Advice.get_advices_by_mark_and_hour(3)
+    advices = await Advice.get_advices_by_mark_and_hour(mark)
     # # получение рандомного совета
     advice = random.choice(advices)
     await bot.send_message(tid, advice.advice)
     await state.finish()
 
-def get_state_id(message: types.Message) -> int:
+def get_state_id(text) -> int:
     for button in state_buttons:
-        if message.text == button.text:
+        if text == button.text:
             return int(button['index'])
 
 
